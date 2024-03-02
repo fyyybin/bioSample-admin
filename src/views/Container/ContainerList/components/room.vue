@@ -3,7 +3,7 @@
         <div class="Content" v-for="bx in props.msg" :key="bx.level">
             <el-popover placement="bottom" :width="200" trigger="hover" :show-arrow="false">
                 <template #reference>
-                    <img src="@/assets/images/bx.png" />
+                    <img src="@/assets/images/container/bx.png" />
                 </template>
                 <p>
                     <span>
@@ -26,6 +26,8 @@ import { defineProps } from 'vue';
 
 const props = defineProps({
     msg: Array,
+    name: String,
+    level: Number,
 });
 </script>
 

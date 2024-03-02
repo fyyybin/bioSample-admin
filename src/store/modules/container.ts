@@ -6,20 +6,21 @@ const getAllContainerList = (ContainerList, parent = [], result = {}) => {
     }
     return result;
 };
-const CalculateCellNum = (data, level = 1, num = 0) => {
-    if (level < 6) {
+const CalculateCellNum = (data, num = 0) => {
+    if (data.level !== 6) {
         for (const item of data) {
             if (item.children) num = CalculateCellNum(item.children, num);
             else num = num + item.cells.length;
         }
-    }
+    } else num = num + data.cells.length;
+
     return num;
 };
 const useContainerStore = defineStore('container', {
     state: () => ({
         ContainerList: [],
         displayItem: false,
-        list: { item: 25920, layer: 6480, frame: 1296, line: 324, Box: 81 },
+        list: { item: 25920, layer: 6480, frame: 1296, line: 324, box: 81 },
     }),
     getters: {
         // 递归处理后的所有面包屑导航列表
@@ -45,8 +46,18 @@ const useContainerStore = defineStore('container', {
             }
         },
         // 递归计算细胞数量
-        getCellsNumRate(data, l, n) {
-            return Math.floor((CalculateCellNum(data, l) * 10000) / this.list[n]) / 100 + '%';
+        getCellsNumRate(data, n) {
+            return Math.floor((CalculateCellNum(data) * 10000) / this.list[n]) / 100 + '%';
+        },
+        searchCellBox(data, i: Number) {
+            for (const item of data) {
+                if (item.position === i) {
+                    return item;
+                }
+            }
+            return {
+                position: i,
+            };
         },
     },
 });

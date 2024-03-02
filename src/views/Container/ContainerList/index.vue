@@ -14,8 +14,8 @@
             <div class="breadcrumb-box mask-image">
                 <el-breadcrumb :separator-icon="ArrowRight">
                     <transition-group nsame="breadcrumb">
-                        <el-breadcrumb-item v-for="(item, index) in ContainerList" :key="item.label">
-                            <div class="el-breadcrumb__inner is-link" @click="onCrumbClick(item, index)">
+                        <el-breadcrumb-item v-for="item in ContainerList" :key="item.label">
+                            <div class="el-breadcrumb__inner is-link" @click="onCrumbClick(item)">
                                 <el-icon v-show="item.icon" class="breadcrumb-icon">
                                     <component :is="item.icon"></component>
                                 </el-icon>
@@ -37,8 +37,6 @@ import { computed } from 'vue';
 import { ArrowRight } from '@element-plus/icons-vue';
 import Room from './components/room.vue';
 import Item from './components/item.vue';
-// import Layer from './components/layer.vue';
-// import Frame from './components/frame.vue';
 import Line from './components/line.vue';
 import Box from './components/Box.vue';
 import { ref } from 'vue';
@@ -52,7 +50,11 @@ const nodeData = ref([]);
 const handleNodeClick = (data: Tree) => {
     name.value = data.label;
     level.value = data.level;
-    nodeData.value = data.children;
+    if (data.children) {
+        nodeData.value = data.children;
+    } else {
+        nodeData.value = data.cells;
+    }
     container.displayItem = false;
 };
 const ContainerList = computed(() => {
@@ -62,8 +64,7 @@ const ContainerList = computed(() => {
 // Click ContainerList
 const onCrumbClick = (item) => {
     name.value = item.label;
-    level.value = data.level;
-    container.changeDisplayItem(false);
+    level.value = item.level;
 };
 </script>
 <style scoped lang="scss">

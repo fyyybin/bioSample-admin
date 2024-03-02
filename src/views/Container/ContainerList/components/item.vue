@@ -11,15 +11,16 @@
                                 :key="subItem.label"
                                 @click="getClickItem(item, subItem)"
                                 :style="{ 'background-color': choose === item.label + subItem.label ? '#f8e3c5' : '#fff' }"
-                                >{{ subItem.label }}<br />{{ container.getCellsNumRate(subItem.level === 6 ? subItem : subItem.children, subItem.level, views[props.level + 1]) }}</span
+                                >{{ subItem.label }}<br />
+                                {{ container.getCellsNumRate(subItem.level !== 6 ? subItem.children : subItem, views[props.level + 1]) }}</span
                             >
                         </p>
                     </div>
                     <div class="door">
                         <div class="doorContent" id="doors_content">
                             <p v-for="item in props.msg" :key="item.label">
-                                <span :style="{ background: container.getColor(item.children, views[props.level]) }"
-                                    >{{ item.label }}<br />{{ container.getCellsNumRate(item.children, item.level, views[props.level]) }}</span
+                                <span :style="{ background: container.getColor(item.children, views[item.level - 1]) }"
+                                    >{{ item.label }}<br />{{ container.getCellsNumRate(item.children, views[item.level - 1]) }}</span
                                 >
                             </p>
                         </div>
@@ -44,7 +45,7 @@
                             <p style="padding: 0 2px">名称:{{ props.name }}</p>
                             <p style="padding: 0 2px">描述:</p>
                             <p style="padding: 0 2px">样本总数:{{ container.getCellsNum(props.msg) }}</p>
-                            <p style="padding: 0 2px">样本空间占有率:{{ container.getCellsNumRate(props.msg, props.level, views[props.level]) }}</p>
+                            <p style="padding: 0 2px">样本空间占有率:{{ container.getCellsNumRate(props.msg, views[props.level - 1]) }}</p>
                             <p style="padding: 0 2px">所存样本类型:全血,脑脊液</p>
                         </div>
                     </div>
@@ -56,8 +57,8 @@
                     <div class="infor_text">
                         <div style="width: 70%; font-size: 14px">
                             <p style="padding: 0 2px">位置:{{ directionItem.label }}</p>
-                            <p style="padding: 0 2px">样本总数:{{ container.getCellsNum(directionItem.children) }}</p>
-                            <p style="padding: 0 2px">样本空间占有率:{{ container.getCellsNumRate(directionItem.children, directionItem.level, views[props.level + 1]) }}</p>
+                            <p style="padding: 0 2px">样本总数:{{ container.getCellsNum(directionItem.level !== 6 ? directionItem.children : directionItem) }}</p>
+                            <p style="padding: 0 2px">样本空间占有率:{{ container.getCellsNumRate(directionItem.level !== 6 ? directionItem.children : directionItem, views[props.level + 1]) }}</p>
                         </div>
                     </div>
                 </div>
@@ -83,6 +84,7 @@ const getClickItem = (n, m) => {
     choose.value = n.label + m.label;
     directionItem.value = m;
     container.displayItem = true;
+    console.log(m);
 };
 </script>
 
