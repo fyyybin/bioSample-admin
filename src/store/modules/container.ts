@@ -49,16 +49,6 @@ const useContainerStore = defineStore('container', {
         getCellsNumRate(data, n) {
             return Math.floor((CalculateCellNum(data) * 10000) / this.list[n]) / 100 + '%';
         },
-        searchCellBox(data, i: Number) {
-            for (const item of data) {
-                if (item.position === i) {
-                    return item;
-                }
-            }
-            return {
-                position: i,
-            };
-        },
     },
 });
 

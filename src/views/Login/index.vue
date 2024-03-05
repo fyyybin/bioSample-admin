@@ -38,8 +38,8 @@
 
 <script lang="ts" setup>
 import { CircleClose, UserFilled } from '@element-plus/icons-vue';
-import { ref, reactive, toRaw } from 'vue';
-import { LoginAPI } from '@/request/api/loginApi';
+import { ref, reactive } from 'vue';
+import { LoginAPI } from '@/http/api';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/store';
 interface LoginFormState {
@@ -73,9 +73,12 @@ const loginRules = {
 
 const onSubmit = () => {
     loginFormRef.value.validate().then(() => {
-        LoginAPI.setLogin(toRaw(loginForm)).then((res) => {
-            UserStore.setToken(res.data.data.token);
-            UserStore.setUserInfo(res.data.data.userInfo);
+        const formData = new FormData();
+        formData.append('username', loginForm.username);
+        formData.append('password', loginForm.password);
+        LoginAPI(formData).then((res) => {
+            UserStore.setToken(res.data.token);
+            UserStore.setUserInfo(res.data.name);
             router.push({ path: '/' });
         });
     });
@@ -85,4 +88,3 @@ const onSubmit = () => {
 <style scoped lang="scss">
 @import './index.scss';
 </style>
-@/pinia

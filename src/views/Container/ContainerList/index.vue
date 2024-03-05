@@ -13,7 +13,7 @@
         <div class="contentMain">
             <div class="breadcrumb-box mask-image">
                 <el-breadcrumb :separator-icon="ArrowRight">
-                    <transition-group nsame="breadcrumb">
+                    <transition-group>
                         <el-breadcrumb-item v-for="item in ContainerList" :key="item.label">
                             <div class="el-breadcrumb__inner is-link" @click="onCrumbClick(item)">
                                 <el-icon v-show="item.icon" class="breadcrumb-icon">
@@ -38,7 +38,7 @@ import { ArrowRight } from '@element-plus/icons-vue';
 import Room from './components/room.vue';
 import Item from './components/item.vue';
 import Line from './components/line.vue';
-import Box from './components/Box.vue';
+import Box from './components/box.vue';
 import { ref } from 'vue';
 const container = useContainerStore();
 container.getContainerList(containerTree);
@@ -47,7 +47,7 @@ const views = [Room, Item, Item, Item, Line, Box];
 const name = ref('');
 const level = ref(0);
 const nodeData = ref([]);
-const handleNodeClick = (data: Tree) => {
+const handleNodeClick = (data) => {
     name.value = data.label;
     level.value = data.level;
     if (data.children) {

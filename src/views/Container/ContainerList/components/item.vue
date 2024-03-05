@@ -84,7 +84,6 @@ const getClickItem = (n, m) => {
     choose.value = n.label + m.label;
     directionItem.value = m;
     container.displayItem = true;
-    console.log(m);
 };
 </script>
 

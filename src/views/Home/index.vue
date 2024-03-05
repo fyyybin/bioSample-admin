@@ -137,20 +137,6 @@ import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 const LeftCenTable = homeLeftCenTable;
 const autoData = autoMachine;
 const realData = realStatistics;
-
-// const swiper = new Swiper('.swiper-container', {
-//     autoHeight: true, // 高度自适应
-//     slidesPerView: 'auto',
-//     loop: true,
-//     direction: 'vertical', // 竖向滚动
-//     autoplay: {
-//         delay: 1000,
-//         // 当用户滑动图片后继续自动轮播
-//         disableOnInteraction: false,
-//     },
-//     observer: true, // 修改swiper自己或子元素时，自动初始化swiper
-//     observeParents: true, // 修改swiper的父元素时，初始化swiper
-// });
 </script>
 
 <style scoped lang="scss">

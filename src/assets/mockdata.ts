@@ -28,7 +28,165 @@ const homeLeftCenTable = [
         resultTotal: '12',
     },
 ];
-
+const MenuList = [
+    {
+        path: '/',
+        name: 'home',
+        component: '/home/index',
+        meta: {
+            icon: 'HomeFilled',
+            title: '首页',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: true,
+            isKeepAlive: true,
+        },
+    },
+    {
+        path: '/Container',
+        name: 'Container',
+        meta: {
+            icon: 'Histogram',
+            title: '样本存储',
+            isLink: '',
+            isHide: false,
+            isFull: true,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+        children: [
+            {
+                path: '/container/list',
+                name: 'ContainerList',
+                meta: {
+                    icon: 'Menu',
+                    title: '容器列表',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+            {
+                path: '/container/transport',
+                name: 'ContainerTransport',
+                meta: {
+                    icon: 'Menu',
+                    title: '样本转移',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+        ],
+    },
+    {
+        path: '/sampleSave',
+        name: 'sampleSave',
+        redirect: '/sampleSave',
+        meta: {
+            icon: 'MessageBox',
+            title: '样本保存',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+        children: [
+            {
+                path: '/sampleSave/position',
+                name: 'transport',
+                component: '/sampleSave/position/index',
+                meta: {
+                    icon: 'Menu',
+                    title: '样本位置',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+            {
+                path: '/sampleSave/temperature',
+                name: 'temperature',
+                component: '/sampleSave/temperature/index',
+                meta: {
+                    icon: 'Menu',
+                    title: '保存温度',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+        ],
+    },
+    {
+        path: '/auth',
+        name: 'auth',
+        redirect: '/auth/menu',
+        meta: {
+            icon: 'Lock',
+            title: '权限管理',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+        children: [
+            {
+                path: '/auth/menu',
+                name: 'authMenu',
+                component: '/auth/menu/index',
+                meta: {
+                    icon: 'Menu',
+                    title: '菜单权限',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+            {
+                path: '/auth/button',
+                name: 'authButton',
+                component: '/auth/button/index',
+                meta: {
+                    icon: 'Menu',
+                    title: '按钮权限',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
+        ],
+    },
+    {
+        path: '/about/index',
+        name: 'about',
+        component: '/about/index',
+        meta: {
+            icon: 'InfoFilled',
+            title: '关于项目',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+    },
+];
 const autoMachine = [
     {
         state: '运行',
@@ -9066,4 +9224,4 @@ const containerTree = [
     },
 ];
 
-export { homeLeftCenTable, autoMachine, realStatistics, containerTree };
+export { homeLeftCenTable, autoMachine, realStatistics, containerTree, MenuList };
