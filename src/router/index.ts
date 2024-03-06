@@ -39,7 +39,7 @@ const routes = [
         },
     },
     {
-        path: '/sampleProcess',
+        path: '/sampleSave/position',
         name: 'sampleProcess',
         component: () => import('../views/SampleProcess/index.vue'),
         meta: {

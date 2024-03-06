@@ -9224,4 +9224,4 @@ const containerTree = [
     },
 ];
 
-export { homeLeftCenTable, autoMachine, realStatistics, containerTree, MenuList };
+export { homeLeftCenTable, autoMachine, realStatistics, MenuList, containerTree };

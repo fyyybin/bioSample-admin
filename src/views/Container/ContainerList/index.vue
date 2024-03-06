@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <div class="contentLeft">
-            <el-tree :data="containerTree" :props="{ label: 'label', children: 'children' }" @node-click="handleNodeClick" :expand-on-click-node="false">
+            <el-tree :data="container.ContainerList" :props="{ label: 'label', children: 'children' }" @node-click="handleNodeClick" :expand-on-click-node="false">
                 <template #default="{ node, data }">
                     <el-icon style="padding: 0 5px 0 0">
                         <component :is="data.icon"></component>
@@ -14,8 +14,8 @@
             <div class="breadcrumb-box mask-image">
                 <el-breadcrumb :separator-icon="ArrowRight">
                     <transition-group>
-                        <el-breadcrumb-item v-for="item in ContainerList" :key="item.label">
-                            <div class="el-breadcrumb__inner is-link" @click="onCrumbClick(item)">
+                        <el-breadcrumb-item v-for="item in ContainerBreadList" :key="item.label">
+                            <div class="el-breadcrumb__inner is-link">
                                 <el-icon v-show="item.icon" class="breadcrumb-icon">
                                     <component :is="item.icon"></component>
                                 </el-icon>
@@ -31,7 +31,6 @@
     </div>
 </template>
 <script setup lang="ts" name="containerList">
-import { containerTree } from '@/assets/mockdata';
 import { useContainerStore } from '@/store';
 import { computed } from 'vue';
 import { ArrowRight } from '@element-plus/icons-vue';
@@ -40,14 +39,21 @@ import Item from './components/item.vue';
 import Line from './components/line.vue';
 import Box from './components/box.vue';
 import { ref } from 'vue';
+// import { containerTree } from '@/assets/mockdata';
 const container = useContainerStore();
-container.getContainerList(containerTree);
-// const views = [Room, Item, Layer, Frame, Line, Box];
+import { CellAPI } from '@/http/api';
+CellAPI().then((res) => {
+    container.getContainerList(res.data.data);
+});
+// container.getContainerList(containerTree);
+
 const views = [Room, Item, Item, Item, Line, Box];
 const name = ref('');
 const level = ref(0);
 const nodeData = ref([]);
+const treePos = ref('');
 const handleNodeClick = (data) => {
+    treePos.value = data.treePos;
     name.value = data.label;
     level.value = data.level;
     if (data.children) {
@@ -57,15 +63,16 @@ const handleNodeClick = (data) => {
     }
     container.displayItem = false;
 };
-const ContainerList = computed(() => {
-    let ContainerData = container.ContainerListGet([name.value] ?? []);
+const ContainerBreadList = computed(() => {
+    let ContainerData = container.ContainerListGet([treePos.value] ?? []);
+    container.addBreadCrumbCell(ContainerData);
     return ContainerData;
 });
 // Click ContainerList
-const onCrumbClick = (item) => {
-    name.value = item.label;
-    level.value = item.level;
-};
+// const onCrumbClick = (item) => {
+//     name.value = item.label;
+//     level.value = item.level;
+// };
 </script>
 <style scoped lang="scss">
 .content {

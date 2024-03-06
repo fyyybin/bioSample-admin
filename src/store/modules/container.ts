@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 const getAllContainerList = (ContainerList, parent = [], result = {}) => {
     for (const item of ContainerList) {
-        result[item.label] = [...parent, item];
-        if (item.children) getAllContainerList(item.children, result[item.label], result);
+        result[item.treePos] = [...parent, item];
+        if (item.children) getAllContainerList(item.children, result[item.treePos], result);
     }
     return result;
 };
@@ -20,6 +20,7 @@ const useContainerStore = defineStore('container', {
     state: () => ({
         ContainerList: [],
         displayItem: false,
+        breadcrumbCell: '',
         list: { item: 25920, layer: 6480, frame: 1296, line: 324, box: 81 },
     }),
     getters: {
@@ -48,6 +49,20 @@ const useContainerStore = defineStore('container', {
         // 递归计算细胞数量
         getCellsNumRate(data, n) {
             return Math.floor((CalculateCellNum(data) * 10000) / this.list[n]) / 100 + '%';
+        },
+        addBreadCrumbCell(data) {
+            this.breadcrumbCell = '';
+            for (const i in data) {
+                this.breadcrumbCell += '/' + data[i].label;
+            }
+        },
+        judgeCellState(newCell, data) {
+            for (const item of data) {
+                if (item['position'] === newCell['position']) {
+                    return false;
+                }
+            }
+            return true;
         },
     },
 });
