@@ -39,13 +39,30 @@ const routes = [
         },
     },
     {
-        path: '/sampleSave/position',
-        name: 'sampleProcess',
-        component: () => import('../views/SampleProcess/index.vue'),
+        path: '/samplesave/resources',
+        name: 'Resources',
+        component: () => import('../views/SampleSave/Resources/index.vue'),
         meta: {
-            title: '样本处理',
+            title: '样本源',
             layout: true,
-            icon: 'Histogram',
+        },
+    },
+    {
+        path: '/samplesave/agreement',
+        name: 'Agreement',
+        component: () => import('../views/SampleSave/Agreements/index.vue'),
+        meta: {
+            title: '样本采集',
+            layout: true,
+        },
+    },
+    {
+        path: '/samplesave/transport',
+        name: 'SamplesaveTransport',
+        component: () => import('../views/SampleSave/SampleTransport/index.vue'),
+        meta: {
+            title: '样本操作',
+            layout: true,
         },
     },
 ];
