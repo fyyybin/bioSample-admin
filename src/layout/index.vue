@@ -36,7 +36,7 @@ import { MenuList } from '@/assets/mockdata';
 const route = useRoute();
 const breadcrumb = useBreadCrumb();
 const collapse = useCollapseStore();
-
+// const router = useRouter();
 breadcrumb.getMenuList(MenuList);
 const List = ref(MenuList);
 const title = '生物样本数据库';

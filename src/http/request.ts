@@ -1,7 +1,7 @@
 import axios from 'axios';
 import base from './base';
-import { useUserStore } from '@/store';
-const userStore = useUserStore();
+// import { useUserStore } from '@/store';
+// const userStore = useUserStore();
 const baseURL = base.baseurl;
 const instance = axios.create({
     baseURL: baseURL,
@@ -11,9 +11,9 @@ const instance = axios.create({
 instance.interceptors.request.use(
     function (config) {
         // 在发送请求之前做些什么
-        if (userStore.token) {
-            config.headers.Authorization = userStore.token;
-        }
+        // if (userStore.token) {
+        //     config.headers.Authorization = userStore.token;
+        // }
         return config;
     },
     function (error) {

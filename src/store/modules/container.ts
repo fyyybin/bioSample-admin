@@ -58,7 +58,7 @@ const useContainerStore = defineStore('container', {
         },
         judgeCellState(newCell, data) {
             for (const item of data) {
-                if (item['position'] === newCell['position']) {
+                if (item['位置'] === newCell['位置']) {
                     return false;
                 }
             }

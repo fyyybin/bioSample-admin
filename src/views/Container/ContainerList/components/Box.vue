@@ -9,8 +9,9 @@
                     </ul>
                     <div class="infor_img">
                         <div style="width: 100%; list-style: none; overflow: hidden">
-                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybtj.png" title="样本添加" @click="dialogVisibleAdd = true" />
-                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybsc.png" title="样本删除" @click="dialogVisibleDel = true" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybtj.png" title="样本入库" @click="dialogAdd" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybtj.png" title="样本出库" @click="dialogVisibleOut = true" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybsc.png" title="样本废弃" @click="dialogVisibleDel = true" />
                         </div>
                     </div>
                 </div>
@@ -21,13 +22,12 @@
                     </ul>
                     <div class="infor_text">
                         <div style="width: 100%; font-size: 12px">
-                            <p style="padding: 0 2px">样本复份编号:{{ displayCell.样本复份编号 }}</p>
                             <p style="padding: 0 2px">样本源编号:{{ displayCell.样本源编号 }}</p>
                             <p style="padding: 0 2px">样本源姓名:{{ displayCell.样本源姓名 }}</p>
                             <p style="padding: 0 2px">样本类型:{{ displayCell.样本类型 }}</p>
-                            <p style="padding: 0 2px">所属样本组:{{ displayCell.所属样本组 }}</p>
-                            <p style="padding: 0 2px">样本状态:{{ displayCell.样本状态 }}</p>
+                            <p style="padding: 0 2px">所属样本组:{{ displayCell.采集医院 }}</p>
                             <p style="padding: 0 2px">样本量:{{ displayCell.样本量 }}</p>
+                            <p style="padding: 0 2px">样本状态:{{ displayCell.入库状态 }}</p>
                             <p style="padding: 0 2px">入库时间:{{ displayCell.入库时间 }}</p>
                         </div>
                     </div>
@@ -35,11 +35,32 @@
             </div>
         </div>
     </div>
-    <el-dialog v-model="dialogVisibleAdd" title="样本添加" width="800">
+    <el-dialog v-model="dialogVisibleAdd" title="样本入库" width="1000">
+        <el-table :data="addCellList" border style="width: 100%; height: 400px" @selection-change="handleSelectionChange">
+            <el-table-column fixed="left" type="selection" width="55" />
+            <el-table-column prop="样本源编号" width="240" label="样本源编号" />
+            <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
+            <el-table-column prop="样本源类型" width="100" label="样本源类型" />
+            <el-table-column prop="样本类型" width="100" label="样本类型" />
+            <el-table-column prop="样本量" width="100" label="样本量" />
+
+            <el-table-column prop="采集医院" width="210" label="所属样本组" />
+            <el-table-column fixed="right" prop="入库状态" width="100" label="样本状态">
+                <template #default="scope">
+                    <el-tag :type="scope.row.入库状态 === '待入库' ? 'primary' : 'warning'">{{ scope.row.入库状态 }}</el-tag>
+                </template>
+            </el-table-column>
+        </el-table>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="dialogVisibleAdd = false">取消</el-button>
+                <el-button type="primary" @click="Add()"> 确认 </el-button>
+            </div>
+        </template>
+    </el-dialog>
+
+    <el-dialog v-model="dialogVisibleOut" title="样本出库" width="800">
         <el-form :model="form" label-width="auto" style="max-width: 600px">
-            <el-form-item label="样本复份编号">
-                <el-input v-model="form.样本复份编号" size="small" style="width: 240px" />
-            </el-form-item>
             <el-form-item label="样本源编号">
                 <el-input v-model="form.样本源编号" size="small" style="width: 240px" />
             </el-form-item>
@@ -68,25 +89,21 @@
             <el-form-item label="样本量">
                 <el-input v-model="form.样本量" size="small" style="width: 240px" />
             </el-form-item>
-            <el-form-item label="位置">
-                <el-input v-model="form.position" size="small" style="width: 40px" placeholder="1A" />
-            </el-form-item>
             <el-form-item label="路径">
                 <el-input disabled size="small" style="width: 600px" :placeholder="container.breadcrumbCell" />
             </el-form-item>
         </el-form>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="dialogVisibleAdd = false">取消</el-button>
-                <el-button type="primary" @click="Add()"> 确认 </el-button>
+                <el-button @click="dialogVisibleOut = false">取消</el-button>
+                <el-button type="primary" @click="Out"> 确认 </el-button>
             </div>
         </template>
     </el-dialog>
-    <el-dialog v-model="dialogVisibleDel" title="样本删除" width="1000">
+    <el-dialog v-model="dialogVisibleDel" title="样本废弃" width="1000">
         <el-table :data="props.msg" style="width: 100%; height: 400px" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" />
-            <el-table-column prop="position" label="位置" />
-            <el-table-column prop="样本复份编号" width="120" label="样本复份编号" />
+            <el-table-column prop="位置" label="位置" />
             <el-table-column prop="样本源编号" width="120" label="样本源编号" />
             <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
             <el-table-column prop="样本类型" label="样本类型" />
@@ -107,7 +124,7 @@ import { ref, reactive } from 'vue';
 import CellBox from '@/components/CellBox.vue';
 import { ElMessage } from 'element-plus';
 import { useContainerStore, useUserStore } from '@/store';
-import { CellAddAPI, CellDelAPI } from '@/http/api';
+import { CellAddAPI, CellDelAPI, CellStorageAPI } from '@/http/api';
 const container = useContainerStore();
 const userStore = useUserStore();
 const props = defineProps({
@@ -115,12 +132,15 @@ const props = defineProps({
     name: String,
     level: Number,
 });
+console.log(props.msg);
+
+const addCellList = ref([]);
+const dialogVisibleOut = ref(false);
 const dialogVisibleAdd = ref(false);
 const dialogVisibleDel = ref(false);
-const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+// const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const form = reactive({
-    position: '',
-    样本复份编号: '',
+    位置: '',
     样本源编号: '',
     样本源姓名: '',
     样本类型: '',
@@ -128,62 +148,8 @@ const form = reactive({
     样本量: '',
 });
 const displayCell = ref([]);
-
-const getCell = (data) => {
-    // console.log(data, '父组件已成功接受到参数');
-    displayCell.value = data;
-    container.displayItem = true;
-};
-// 提示组件
-const ErrorMessage = (message) => {
-    ElMessage.error(message);
-};
-const SuccessMessage = (message) => {
-    ElMessage({
-        message: message,
-        type: 'success',
-    });
-};
-// 添加细胞样本
-const Add = () => {
-    if (num1.indexOf(form.position[1]) > -1) {
-        const now = new Date();
-        const cellData = {
-            position: num1.indexOf(form.position[1]) * 9 + Number(form.position[0]),
-            样本复份编号: form.样本复份编号,
-            样本源编号: form.样本源编号,
-            样本源姓名: form.样本源姓名,
-            样本类型: form.样本类型,
-            所属样本组: form.所属样本组,
-            样本量: form.样本量,
-            入库时间: now.getFullYear() + ('0' + (now.getMonth() + 1)).slice(-2) + ('0' + now.getDate()).slice(-2),
-        };
-
-        if (container.judgeCellState(cellData, props.msg)) {
-            const formData = new FormData();
-            Object.keys(cellData).forEach((key) => {
-                formData.append(key, cellData[key]);
-            });
-            formData.append('name', userStore.userInfo.name);
-            // console.log(formData);
-
-            CellAddAPI(formData).then((res) => {
-                SuccessMessage('添加样本进入审批');
-                dialogVisibleAdd.value = false;
-            });
-        } else {
-            ErrorMessage('该位置已存在样本');
-        }
-    } else {
-        ErrorMessage('请输入正确格式的位置');
-    }
-};
-
-// 选择需要删除的item
-
 interface FormData {
-    position: number;
-    样本复份编号: string;
+    位置: number;
     样本源编号: string;
     样本源姓名: string;
     样本类型: string;
@@ -197,17 +163,85 @@ const handleSelectionChange = (val: FormData[]) => {
     multipleSelection.value = val;
 };
 
+const getCell = (data) => {
+    displayCell.value = data;
+    if (data.样本类型 !== '暂无') {
+        container.displayItem = true;
+    }
+};
+// 提示组件
+const ErrorMessage = (message) => {
+    ElMessage.error(message);
+};
+const SuccessMessage = (message) => {
+    ElMessage({
+        message: message,
+        type: 'success',
+    });
+};
+
+// 细胞入库
+const dialogAdd = () => {
+    if (displayCell.value.样本类型 !== '暂无') {
+        ErrorMessage('请选择一个空闲的位置！');
+    } else {
+        CellAddAPI().then((res) => {
+            addCellList.value = res.data.result;
+        });
+        dialogVisibleAdd.value = true;
+    }
+};
+const Add = () => {
+    if (multipleSelection.value[0].入库状态 === '审核中') {
+        ErrorMessage('该样本已在入库审核！');
+    } else {
+        const formData = new FormData();
+        formData.append('样本源编号', multipleSelection.value[0].样本源编号);
+        formData.append('位置', container.breadcrumbCell + '/' + displayCell.value.POS);
+        formData.append('name', userStore.userInfo);
+        CellStorageAPI(formData).then((res) => {});
+        dialogVisibleAdd.value = false;
+    }
+};
+
+// 细胞出库
+const Out = () => {
+    if (displayCell.value.样本类型 === '暂无') {
+        ErrorMessage('请选择一个需要出库的细胞');
+    } else {
+        if (form.样本源编号 === '' || form.样本源姓名 === '' || form.样本类型 === '' || form.所属样本组 === '' || form.样本量 === '') {
+            ErrorMessage('内容不能为空！');
+        } else {
+            const now = new Date();
+            const cellData = {
+                样本源编号: form.样本源编号,
+                样本源姓名: form.样本源姓名,
+                样本类型: form.样本类型,
+                所属样本组: form.所属样本组,
+                样本量: form.样本量,
+                入库时间: now.getFullYear() + ('0' + (now.getMonth() + 1)).slice(-2) + ('0' + now.getDate()).slice(-2),
+            };
+            const formData = new FormData();
+            Object.keys(cellData).forEach((key) => {
+                formData.append(key, cellData[key]);
+            });
+            formData.append('name', userStore.userInfo);
+        }
+    }
+};
+
+// 选择需要删除的item
+
 const Del = () => {
     const formData = new FormData();
     Object.keys(multipleSelection.value).forEach((key) => {
         formData.append(key, multipleSelection.value[key]);
     });
-    formData.append('name', userStore.userInfo.name);
+    formData.append('name', userStore.userInfo);
     CellDelAPI(formData).then((res) => {
         SuccessMessage('删除样本进入审批');
         dialogVisibleDel.value = false;
     });
-    console.log(multipleSelection.value);
 };
 </script>
 

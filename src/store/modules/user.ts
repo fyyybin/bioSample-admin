@@ -19,7 +19,7 @@ const piniaPersistConfig = (key: string, paths?: string[]) => {
 const useUserStore = defineStore('user', {
     state: () => ({
         token: '',
-        userInfo: { name: 'admin' },
+        userInfo: '',
     }),
     actions: {
         setToken(token: string) {
@@ -27,13 +27,14 @@ const useUserStore = defineStore('user', {
             this.token = token;
         },
         setUserInfo(userInfo) {
-            localStorage.setItem('userInfo', JSON.stringify(userInfo));
-            this.token = userInfo;
+            localStorage.setItem('userInfo', userInfo);
+            this.userInfo = userInfo;
         },
         clearToken() {
             localStorage.removeItem('token');
             this.token = '';
         },
+
         // clearUsertInfo() {
         //     localStorage.removeItem('userInfo');
         //     this.userInfo = {};

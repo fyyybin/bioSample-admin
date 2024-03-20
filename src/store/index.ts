@@ -4,4 +4,5 @@ import useTabsStore from './modules/tabs';
 import useUserStore from './modules/user';
 import useCollapseStore from './modules/collapse';
 import useContainerStore from './modules/container';
-export { useBreadCrumb, useLoadingStore, useTabsStore, useUserStore, useCollapseStore, useContainerStore };
+import useExamineStore from './modules/examine';
+export { useBreadCrumb, useLoadingStore, useTabsStore, useUserStore, useCollapseStore, useContainerStore, useExamineStore };

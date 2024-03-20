@@ -1,72 +1,74 @@
 <template>
-    <div class="top">
-        <div class="content">
-            <div class="left">
-                <el-button type="primary" @click="dialogVisibleOldTrans = true">请选择转移前的容器</el-button>
-                <span>{{ oldList }}</span>
-                <div>
-                    <CellBox :msg="nodeDataOld" @cellDetail="getCell" v-if="boxDisplay1"></CellBox>
-                </div>
-            </div>
-            <div class="right">
-                <el-button type="primary" @click="dialogVisibleNewTrans = true">请选择转移后的容器</el-button>
-                <span>{{ newList }}</span>
-                <div>
-                    <CellBox :msg="nodeDataNew" @cellDetail="getCell" v-if="boxDisplay2"></CellBox>
-                </div>
-            </div>
-            <el-dialog v-model="dialogVisibleOldTrans" title="请选择转移前的容器" width="500">
-                <el-tree ref="treeRefOld" :data="container.ContainerList" :props="{ label: 'label', children: 'children', disabled: 'disabled' }" :expand-on-click-node="false" show-checkbox>
-                    <template #default="{ node, data }">
-                        <el-icon style="padding: 0 5px 0 0">
-                            <component :is="data.icon"></component>
-                        </el-icon>
-                        <span> {{ node.label }}</span>
-                    </template>
-                </el-tree>
-                <template #footer>
-                    <div class="dialog-footer">
-                        <el-button @click="resetNodes1">重置</el-button>
-                        <el-button @click="getCheckedNodes1">确认</el-button>
+    <div style="width: 100%; height: 100%">
+        <div class="top">
+            <div class="content">
+                <div class="left">
+                    <el-button type="primary" @click="dialogVisibleOldTrans = true">请选择转移前的容器</el-button>
+                    <span>{{ oldList }}</span>
+                    <div>
+                        <CellBox :msg="nodeDataOld" @cellDetail="getOldCell" v-if="boxDisplay1"></CellBox>
                     </div>
-                </template>
-            </el-dialog>
-            <el-dialog v-model="dialogVisibleNewTrans" title="请选择转移后的容器" width="500">
-                <el-tree ref="treeRefNew" :data="container.ContainerList" :props="{ label: 'label', children: 'children', disabled: 'disabled' }" :expand-on-click-node="false" show-checkbox>
-                    <template #default="{ node, data }">
-                        <el-icon style="padding: 0 5px 0 0">
-                            <component :is="data.icon"></component>
-                        </el-icon>
-                        <span> {{ node.label }}</span>
-                    </template>
-                </el-tree>
-                <template #footer>
-                    <div class="dialog-footer">
-                        <el-button @click="resetNodes2">重置</el-button>
-                        <el-button @click="getCheckedNodes2">确认</el-button>
+                </div>
+                <div class="right">
+                    <el-button type="primary" @click="dialogVisibleNewTrans = true">请选择转移后的容器</el-button>
+                    <span>{{ newList }}</span>
+                    <div>
+                        <CellBox :msg="nodeDataNew" @cellDetail="getNewCell" v-if="boxDisplay2"></CellBox>
                     </div>
-                </template>
-            </el-dialog>
+                </div>
+                <el-dialog v-model="dialogVisibleOldTrans" title="请选择转移前的容器" width="500">
+                    <el-tree ref="treeRefOld" :data="container.ContainerList" :props="{ label: 'label', children: 'children', disabled: 'disabled' }" :expand-on-click-node="false" show-checkbox>
+                        <template #default="{ node, data }">
+                            <el-icon style="padding: 0 5px 0 0">
+                                <component :is="data.icon"></component>
+                            </el-icon>
+                            <span> {{ node.label }}</span>
+                        </template>
+                    </el-tree>
+                    <template #footer>
+                        <div class="dialog-footer">
+                            <el-button @click="resetNodes1">重置</el-button>
+                            <el-button @click="getCheckedNodes1">确认</el-button>
+                        </div>
+                    </template>
+                </el-dialog>
+                <el-dialog v-model="dialogVisibleNewTrans" title="请选择转移后的容器" width="500">
+                    <el-tree ref="treeRefNew" :data="container.ContainerList" :props="{ label: 'label', children: 'children', disabled: 'disabled' }" :expand-on-click-node="false" show-checkbox>
+                        <template #default="{ node, data }">
+                            <el-icon style="padding: 0 5px 0 0">
+                                <component :is="data.icon"></component>
+                            </el-icon>
+                            <span> {{ node.label }}</span>
+                        </template>
+                    </el-tree>
+                    <template #footer>
+                        <div class="dialog-footer">
+                            <el-button @click="resetNodes2">重置</el-button>
+                            <el-button @click="getCheckedNodes2">确认</el-button>
+                        </div>
+                    </template>
+                </el-dialog>
+            </div>
         </div>
-    </div>
-    <div class="bottom">
-        <div style="text-align: center">
-            <el-button>生成转移单</el-button>
+        <div class="bottom">
+            <div>
+                <el-button @click="trans">生成转移单</el-button>
+            </div>
         </div>
     </div>
 </template>
 <script setup lang="ts" name="containerList">
 import { ref } from 'vue';
 import CellBox from '@/components/CellBox.vue';
-import { useContainerStore } from '@/store';
+import { useContainerStore, useUserStore } from '@/store';
 import { ElTree } from 'element-plus';
-// import type Node from 'element-plus/es/components/tree/src/model/node';
-import { CellAPI } from '@/http/api';
+import { CellAPI, CellTransAPI } from '@/http/api';
 import { ElMessage } from 'element-plus';
 CellAPI().then((res) => {
     container.getContainerList(res.data.data);
 });
 const container = useContainerStore();
+const userStore = useUserStore();
 const treeRefOld = ref<InstanceType<typeof ElTree>>();
 const treeRefNew = ref<InstanceType<typeof ElTree>>();
 const boxDisplay1 = ref(false);
@@ -77,6 +79,9 @@ const nodeDataOld = ref([]);
 const nodeDataNew = ref([]);
 const oldList = ref('');
 const newList = ref('');
+const selectOld = ref({});
+const selectNew = ref({});
+
 const getCheckedNodes1 = () => {
     if (treeRefOld.value!.getCheckedNodes(false, false).length === 1 && treeRefOld.value!.getCheckedNodes(false, false)[0].level === 6) {
         nodeDataOld.value = treeRefOld.value!.getCheckedNodes(false, false)[0].cells;
@@ -105,9 +110,20 @@ const getCheckedNodes2 = () => {
 const resetNodes2 = () => {
     treeRefNew.value!.setCheckedKeys([], false);
 };
-const getCell = (data) => {
-    // console.log(data, '父组件已成功接受到参数');
-    console.log(data);
+const getOldCell = (data) => {
+    if (data.样本类型 === '暂无') {
+        ErrorMessage('请选择需要转移的样本！');
+    } else {
+        selectOld.value = data;
+    }
+};
+const getNewCell = (data) => {
+    if (data.样本类型 !== '暂无') {
+        ErrorMessage('请选择容器中空的位置！');
+    } else {
+        data['位置'] = newList.value + '/' + data.位置;
+        selectNew.value = data;
+    }
 };
 
 // 提示组件
@@ -118,6 +134,15 @@ const SuccessMessage = (message) => {
     ElMessage({
         message: message,
         type: 'success',
+    });
+};
+const trans = () => {
+    const data = { oldData: JSON.stringify(selectOld.value), newData: JSON.stringify(selectNew.value) };
+    CellTransAPI(data).then((res) => {
+        SuccessMessage('转移成功！');
+    });
+    CellAPI().then((res) => {
+        container.getContainerList(res.data.data);
     });
 };
 </script>

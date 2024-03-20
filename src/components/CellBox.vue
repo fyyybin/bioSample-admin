@@ -17,9 +17,6 @@
                     </template>
                     <p>
                         <span>
-                            <p>样本复份编号:{{ searchCellBox(props.msg, index).样本复份编号 }}</p>
-                        </span>
-                        <span>
                             <p>样本源编号:{{ searchCellBox(props.msg, index).样本源编号 }}</p>
                         </span>
                         <span>
@@ -59,12 +56,13 @@ const images = {
 };
 const searchCellBox = (data, i) => {
     for (const item of data) {
-        if (item.position === i) {
+        if (item.POS === i) {
             return item;
         }
     }
     return {
         样本类型: '暂无',
+        POS: i,
     };
 };
 //定义要发送的事件名称，如 aList

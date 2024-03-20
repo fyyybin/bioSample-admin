@@ -2,70 +2,32 @@
     <div class="message">
         <el-popover placement="bottom" :width="310" trigger="click">
             <template #reference>
-                <el-badge :value="5" class="item">
+                <el-badge :value="examineData.length" class="item">
                     <el-icon class="iconFont iconMessage"><Message /></el-icon>
                 </el-badge>
             </template>
-            <el-tabs v-model="activeName">
-                <el-tab-pane label="通知(5)" name="first">
-                    <div class="message-list">
-                        <div class="message-item">
-                            <img src="@/assets/images/msg01.png" alt="" class="message-icon" />
-                            <div class="message-content">
-                                <span class="message-title">一键三连 Geeker-Admin 🧡</span>
-                                <span class="message-date">一分钟前</span>
-                            </div>
-                        </div>
-                        <div class="message-item">
-                            <img src="@/assets/images/msg02.png" alt="" class="message-icon" />
-                            <div class="message-content">
-                                <span class="message-title">一键三连 Geeker-Admin 💙</span>
-                                <span class="message-date">一小时前</span>
-                            </div>
-                        </div>
-                        <div class="message-item">
-                            <img src="@/assets/images/msg03.png" alt="" class="message-icon" />
-                            <div class="message-content">
-                                <span class="message-title">一键三连 Geeker-Admin 💚</span>
-                                <span class="message-date">半天前</span>
-                            </div>
-                        </div>
-                        <div class="message-item">
-                            <img src="@/assets/images/msg04.png" alt="" class="message-icon" />
-                            <div class="message-content">
-                                <span class="message-title">一键三连 Geeker-Admin 💜</span>
-                                <span class="message-date">一星期前</span>
-                            </div>
-                        </div>
-                        <div class="message-item">
-                            <img src="@/assets/images/msg05.png" alt="" class="message-icon" />
-                            <div class="message-content">
-                                <span class="message-title">一键三连 Geeker-Admin 💛</span>
-                                <span class="message-date">一个月前</span>
-                            </div>
-                        </div>
+            <div class="message-list">
+                <div class="message-item" v-for="(item, index) in examineData" :key="index">
+                    <div class="message-content" v-if="item.用户信息 !== 'admin'">
+                        <span class="message-title">{{ item.样本源编号 }}</span>
+                        <span class="message-title">申请{{ item.操作 }}</span>
+                        <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp;样本状态:{{ item.入库状态 }}</span>
                     </div>
-                </el-tab-pane>
-                <el-tab-pane label="消息(0)" name="second">
-                    <div class="message-empty">
-                        <img src="@/assets/images/notData.png" alt="notData" />
-                        <div>暂无消息</div>
+                    <div class="message-content" v-if="item.用户信息 === 'admin'">
+                        <span class="message-title">{{ item.用户信息 }}</span>
+                        <span class="message-title">申请{{ item.操作 }}</span>
+                        <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp; 样本状态:{{ item.入库状态 }}</span>
                     </div>
-                </el-tab-pane>
-                <el-tab-pane label="代办(0)" name="third">
-                    <div class="message-empty">
-                        <img src="@/assets/images/notData.png" alt="notData" />
-                        <div>暂无代办</div>
-                    </div>
-                </el-tab-pane>
-            </el-tabs>
+                    <el-icon @click="examineDetail(item)" style="width: 30px"><InfoFilled /></el-icon>
+                </div>
+            </div>
         </el-popover>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-const activeName = ref('first');
+import { useExamineStore } from '@/store';
+import { computed } from 'vue';
 </script>
 
 <style scoped lang="scss">
@@ -94,16 +56,10 @@ const activeName = ref('first');
     .message-item {
         display: flex;
         align-items: center;
-        padding: 20px 0;
-        border-bottom: 1px solid var(--el-border-color-light);
-        &:last-child {
-            border: none;
-        }
-        .message-icon {
-            width: 40px;
-            height: 40px;
-            margin: 0 20px 0 5px;
-        }
+        padding: 2px;
+        border: 1px solid #1aa194;
+        border-top: 5px solid #1aa194;
+        justify-content: space-between;
         .message-content {
             display: flex;
             flex-direction: column;

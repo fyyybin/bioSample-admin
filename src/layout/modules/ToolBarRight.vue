@@ -1,8 +1,8 @@
 <template>
     <div class="tool-bar-ri">
-        <div class="header-icon">
-            <Message id="message" />
-        </div>
+        <!-- <div class="header-icon">
+            <Message />
+        </div> -->
         <span class="username">{{ username }}</span>
         <Avatar />
     </div>
@@ -11,10 +11,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { useUserStore } from '@/store';
-import Message from '@/components/Message.vue';
+// import Message from '@/components/Message.vue';
 import Avatar from '@/components/Avatar.vue';
+
 const user = useUserStore();
-const username = computed(() => user.userInfo.name);
+const username = computed(() => user.userInfo);
 </script>
 
 <style scoped lang="scss">
