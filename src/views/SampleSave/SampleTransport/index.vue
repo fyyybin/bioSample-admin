@@ -55,7 +55,7 @@
             :close-on-click-modal="false"
             :destroy-on-close="true"
             style="font-size: 18px; ">
-            <template #title>
+            <template #header>
                 采集信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px;">{{ infos["样本源编号"] }}</el-tag>
             </template>
             <div class="info">
@@ -94,7 +94,7 @@
             :close-on-click-modal="false"
             :destroy-on-close="true"
             style="font-size: 18px; ">
-            <template #title>
+            <template #header>
                 运输信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px;">{{ infos["样本源编号"] }}</el-tag>
             </template>
             <div class="info">
@@ -133,7 +133,7 @@
             :close-on-click-modal="false"
             :destroy-on-close="true"
             style="font-size: 18px; ">
-            <template #title>
+            <template #header>
                 接收信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px;">{{ infos["样本源编号"] }}</el-tag>
             </template>
             <div class="info">

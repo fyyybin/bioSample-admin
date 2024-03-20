@@ -32,7 +32,7 @@
             :close-on-click-modal="false"
             @close="clearData"
             style="font-size: 18px; ">
-            <template #title>
+            <template #header>
                 采集信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px;">{{ infos["样本源编号"] }}</el-tag>
             </template>
             <div class="info">

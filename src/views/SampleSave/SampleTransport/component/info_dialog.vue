@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: center;">
         <el-collapse class="con">
             <el-collapse-item style="margin: 5px 2px 0px 5px;" v-for="item in detail_headers">
-                <template #title>
+                <template #header>
                     <img :src=getImageUrl(item.icon) @click="" class="table-btn"/>
                     <span class="info-title">{{ item.label }}</span>
                 </template>

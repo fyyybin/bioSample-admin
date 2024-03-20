@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: center;">
         <el-collapse class="con" :loading="loading">
             <el-collapse-item style="margin: 5px 2px 0px 5px;">
-                <template #title>
+                <template #header>
                     <img :src=getImageUrl(1) @click="" class="table-btn"/>
                     <span class="info-title">样本源</span>
                 </template>
@@ -16,7 +16,7 @@
                 </div>
             </el-collapse-item>
             <el-collapse-item style="margin: 5px 2px 0px 5px;">
-                <template #title>
+                <template #header>
                     <img :src=getImageUrl(2) @click="" class="table-btn"/>
                     <span class="info-title">采集信息</span>
                 </template>

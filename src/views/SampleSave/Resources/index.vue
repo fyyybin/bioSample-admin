@@ -110,7 +110,7 @@
             :close-on-click-modal="false"
             :destroy-on-close=true
             @close="clearData">
-            <template #title>
+            <template #header>
                 知情同意<el-tag type="primary" style="font-size: 13px; margin-left: 10px;">{{ infos["样本源编号"] }}</el-tag>
             </template>
             <div label-width="auto" style="padding: 0px 15px;">
