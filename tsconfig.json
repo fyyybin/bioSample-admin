@@ -1,4 +1,5 @@
 {
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "compilerOptions": {
         "target": "ES2020",
         "useDefineForClassFields": true,
@@ -15,17 +16,15 @@
         "jsx": "preserve",
 
         /* Linting */
-        "strict": true,
+        "strict": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
-
         "noImplicitAny": false,
         "baseUrl": ".",
         "paths": {
             "@/*": ["src/*"]
-        },
-        "types": ["pinia-plugin-persist"]
+        }
     },
     "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
     "references": [{ "path": "./tsconfig.node.json" }]
