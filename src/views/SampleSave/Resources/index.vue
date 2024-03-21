@@ -130,9 +130,8 @@ import { onMounted, computed, reactive, ref } from 'vue';
 import { Search, CirclePlus, Refresh } from '@element-plus/icons-vue';
 // 表格标题
 import { tableheaders, sampleType, hospital } from '../variable';
-import axios from 'axios';
 import { ElMessage } from 'element-plus';
-
+import { sampleFromSearch, sampleFromAdd, sampleFromDel, sampleFromAgree } from '@/http/api';
 const noticeDialog = ref(false);
 const loading = ref(true);
 const fromList = ref([]);
@@ -160,72 +159,42 @@ const date = ref('');
 const submitData = (new_name, new_from, new_hospital) => {
     if (new_hospital == '' || new_name == '' || new_from == '') tips('warning', '表格不能为空！');
     else {
-        let params = {
-            样本源姓名: new_name,
-            样本源类型: new_from,
-            采集医院: new_hospital,
-        };
-        var config = {
-            method: 'post',
-            url: 'http://127.0.0.1:5002/samplefrom/add/',
-            headers: {
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-                'Content-Type': 'application/json',
-            },
-            data: params,
-        };
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-                dialogVisible.value = false;
-                tips('success', '样本源注册成功！');
-                getData('');
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        const formData = new FormData();
+        formData.append('样本源姓名', new_name);
+        formData.append('样本源类型', new_from);
+        formData.append('采集医院', new_hospital);
+        sampleFromAdd(formData).then((response) => {
+            console.log(JSON.stringify(response.data));
+            dialogVisible.value = false;
+            tips('success', '样本源注册成功！');
+            getData('');
+        });
     }
 };
 // 样本源列表
 const getData = (item) => {
-    var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5002/samplefrom/' + item,
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-        },
-    };
-    axios(config)
-        .then(function (response) {
+    sampleFromSearch(item)
+        .then((response) => {
             let result = response.data;
             fromList.value = result.data;
             dialogVisible.value = false;
             loading.value = false;
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.log(error);
             loading.value = false;
         });
 };
 // 删除样本源
 const delSample = (item) => {
-    var config = {
-        method: 'delete',
-        url: 'http://127.0.0.1:5002/samplefrom/delete/' + item + '/',
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-        },
-    };
-    axios(config)
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
+    sampleFromDel(item)
+        .then((response) => {
             tips('success', '样本源已删除！');
             noticeDialog.value = false;
             loading.value = true;
             getData('');
         })
-        .catch(function (error) {
-            console.log(error);
+        .catch((error) => {
             loading.value = false;
         });
 };
@@ -233,30 +202,16 @@ const delSample = (item) => {
 const modifySample = (new_year, new_sex, new_date, id) => {
     if (new_year == '' || new_sex == '' || new_date == '') tips('warning', '表格不能为空！');
     else {
-        let params = {
-            样本源编号: id,
-            年龄: new_year,
-            性别: new_sex,
-            创建时间: new_date,
-        };
-        var config = {
-            method: 'post',
-            url: 'http://127.0.0.1:5002/samplefrom/agree/add/',
-            headers: {
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-                'Content-Type': 'application/json',
-            },
-            data: params,
-        };
-        axios(config)
-            .then(function (response) {
-                agreeDialog.value = false;
-                tips('success', '样本源已修改！');
-                getData('');
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        const formData = new FormData();
+        formData.append('样本源编号', id);
+        formData.append('年龄', new_year);
+        formData.append('性别', new_sex);
+        formData.append('创建时间', new_date);
+        sampleFromAgree(formData).then((res) => {
+            agreeDialog.value = false;
+            tips('success', '样本源已修改！');
+            getData('');
+        });
     }
 };
 const infos = ref();

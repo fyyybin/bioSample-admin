@@ -86,10 +86,9 @@
 import { onMounted, computed, reactive, ref } from 'vue';
 import { CirclePlus, Switch } from '@element-plus/icons-vue';
 import { tableheaders, content, pred } from '../variable';
-import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import fromInfo from './fromInfo.vue';
-
+import { sampleFromAgreeSearch, collectionAdd } from '@/http/api';
 // 表单信息
 const sample_date = ref('');
 const sample_valume = ref('');
@@ -118,25 +117,14 @@ const openInfo = (item, type) => {
 };
 // 样本源列表
 const getData = () => {
-    var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5002/samplefrom/agree/',
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-        },
-    };
-    axios(config)
-        .then(function (response) {
-            let result = response.data;
-            fromList.value = result.data;
-            dialogVisible.value = false;
-            loading.value = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            loading.value = false;
-        });
+    sampleFromAgreeSearch().then((response) => {
+        let result = response.data;
+        fromList.value = result.data;
+        dialogVisible.value = false;
+        loading.value = false;
+    });
 };
+
 // 所有样本
 const id = ref('');
 const showDetail = () => {
@@ -152,27 +140,18 @@ const submitData = (date, valume, content, pred) => {
         infos.value['样本类型'] = content;
         infos.value['样本量'] = valume;
         infos.value['预处理'] = pred;
-        let params = infos.value;
-        var config = {
-            method: 'post',
-            url: 'http://127.0.0.1:5002/collection/add/',
-            headers: {
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-                'Content-Type': 'application/json',
-            },
-            data: params,
-        };
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-                dialogVisible.value = false;
-                tips(2);
-                loading.value = true;
-                getData();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+
+        const formData = new FormData();
+        Object.keys(infos.value).forEach((key) => {
+            formData.append(key, infos.value[key]);
+        });
+        collectionAdd(formData).then((response) => {
+            // console.log(JSON.stringify(response.data));
+            dialogVisible.value = false;
+            tips(2);
+            loading.value = true;
+            getData();
+        });
     }
 };
 

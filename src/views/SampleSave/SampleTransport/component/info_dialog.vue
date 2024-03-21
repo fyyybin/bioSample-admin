@@ -22,8 +22,7 @@
 <script setup lang="ts">
 import { detail_headers, detail_titles } from '../../variable';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
-
+import { collectionInfo } from '@/http/api';
 const props = defineProps({
     params: String,
     content: String,
@@ -38,25 +37,11 @@ const details = ref({});
 const loading = ref(true);
 // 样本详细信息
 const getData = () => {
-    var config = {
-        method: 'post',
-        url: 'http://127.0.0.1:5002/collection/info/',
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-            'Content-Type': 'application/json',
-        },
-        data: querys,
-    };
-    axios(config)
-        .then(function (response) {
-            let result = response.data;
-            details.value = result.data;
-            loading.value = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            loading.value = false;
-        });
+    collectionInfo(querys).then((response) => {
+        let result = response.data;
+        details.value = result.data;
+        loading.value = false;
+    });
 };
 
 onMounted(() => {

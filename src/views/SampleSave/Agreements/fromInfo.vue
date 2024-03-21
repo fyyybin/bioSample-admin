@@ -38,8 +38,7 @@
 <script setup lang="ts">
 import { detail_titles, identifyheaders } from '../variable';
 import { onMounted, ref } from 'vue';
-import axios from 'axios';
-
+import { samplefromQuery, collectionSample } from '@/http/api';
 const props = defineProps({
     params: String,
 });
@@ -47,50 +46,26 @@ const details = ref([]);
 const loading = ref(true);
 // 样本详细信息
 const getData = () => {
-    var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5002/samplefrom/query/' + props.params,
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-            'Content-Type': 'application/json',
-        },
-    };
-    axios(config)
-        .then(function (response) {
-            let result = response.data;
-            details.value = result.data;
-            console.log(details);
-            loading.value = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            loading.value = false;
-        });
+    samplefromQuery(props.params).then((response) => {
+        let result = response.data;
+        details.value = result.data;
+        // console.log(details);
+        loading.value = false;
+    });
 };
+
 const sampleList = ref([]);
 const sampleData = () => {
-    var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5002/collection/' + props.params,
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-        },
-    };
-    axios(config)
-        .then(function (response) {
-            let result = response.data;
-            sampleList.value = result.data;
-            console.log(sampleList);
-            loading.value = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            loading.value = false;
-        });
+    collectionSample(props.params).then((response) => {
+        let result = response.data;
+        sampleList.value = result.data;
+        // console.log(sampleList);
+        loading.value = false;
+    });
 };
 
 const typeColor = (item) => {
-    if (item == '已完成') return 'primary';
+    if (item == '已完成') return 'success';
     else if (item == '未知') return 'danger';
     else return 'warning';
 };

@@ -54,7 +54,7 @@
 
         <!--采集按钮对话框-->
         <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #header>
+            <template #title>
                 采集信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
@@ -82,7 +82,7 @@
 
         <!--运输按钮对话框-->
         <el-dialog v-model="tran_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #header>
+            <template #title>
                 运输信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
@@ -110,7 +110,7 @@
 
         <!--接收按钮对话框-->
         <el-dialog v-model="acc_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #header>
+            <template #title>
                 接收信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
@@ -142,9 +142,8 @@
 import { computed, onMounted, reactive, ref } from 'vue';
 import { col_headers } from '../variable';
 import { ElMessage } from 'element-plus';
-import axios from 'axios';
 import infoDetail from './component/info_dialog.vue';
-
+import { collectionSearch, collectionCom, collectionTrans, collectionAcc } from '@/http/api';
 const collectList = ref([]);
 const loading = ref(true);
 
@@ -189,23 +188,11 @@ const showDetail = () => {
 
 // 所有采集需求
 const getData = () => {
-    var config = {
-        method: 'get',
-        url: 'http://127.0.0.1:5002/collection/',
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-        },
-    };
-    axios(config)
-        .then(function (response) {
-            let result = response.data;
-            collectList.value = result.data;
-            loading.value = false;
-        })
-        .catch(function (error) {
-            console.log(error);
-            loading.value = false;
-        });
+    collectionSearch().then((response) => {
+        let result = response.data;
+        collectList.value = result.data;
+        loading.value = false;
+    });
 };
 // 采集按钮
 const colSubmit = (item, date) => {
@@ -215,25 +202,12 @@ const colSubmit = (item, date) => {
         采集医院: item['采集医院'],
         采集时间: date,
     };
-    var config = {
-        method: 'post',
-        url: 'http://127.0.0.1:5002/collection/complete/',
-        headers: {
-            'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-            'Content-Type': 'application/json',
-        },
-        data: params,
-    };
-    axios(config)
-        .then(function (response) {
-            console.log(JSON.stringify(response.data));
-            col_dialog.value = false;
-            mess(1);
-            getData();
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+    collectionCom(params).then((response) => {
+        // console.log(JSON.stringify(response.data));
+        col_dialog.value = false;
+        mess(1);
+        getData();
+    });
 };
 // 运输按钮
 const tranSubmit = (item, name, staff, phone, date) => {
@@ -249,25 +223,12 @@ const tranSubmit = (item, name, staff, phone, date) => {
             负责人联系方式: phone,
             运出时间: date,
         };
-        var config = {
-            method: 'post',
-            url: 'http://127.0.0.1:5002/collection/transport/',
-            headers: {
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-                'Content-Type': 'application/json',
-            },
-            data: params,
-        };
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-                tran_dialog.value = false;
-                mess(2);
-                getData();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        collectionTrans(params).then((response) => {
+            // console.log(JSON.stringify(response.data));
+            tran_dialog.value = false;
+            mess(2);
+            getData();
+        });
     }
 };
 // 接收按钮
@@ -283,26 +244,12 @@ const accSubmit = (item, staff, phone, date) => {
             接收人联系方式: phone,
             接收时间: date,
         };
-        console.log(params);
-        var config = {
-            method: 'post',
-            url: 'http://127.0.0.1:5002/collection/accept/',
-            headers: {
-                'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
-                'Content-Type': 'application/json',
-            },
-            data: params,
-        };
-        axios(config)
-            .then(function (response) {
-                console.log(JSON.stringify(response.data));
-                acc_dialog.value = false;
-                mess(3);
-                getData();
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+        collectionAcc(params).then((response) => {
+            // console.log(JSON.stringify(response.data));
+            acc_dialog.value = false;
+            mess(3);
+            getData();
+        });
     }
 };
 const currentPage = ref(1);
