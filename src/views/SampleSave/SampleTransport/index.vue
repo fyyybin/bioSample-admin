@@ -1,6 +1,16 @@
 <template>
     <div class="content">
-        <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; margin-top: 5px; font-size: 12px">
+        <span style="color: red; font-size: small; margin-bottom: 5px">* 当前列表显示所有状态下的样本信息</span>
+
+        <el-table
+            :data="pageData.datalist"
+            border
+            v-loading="loading"
+            element-loading-text="数据正在加载中..."
+            :element-loading-svg="svg"
+            style="width: 100%; margin-top: 5px; font-size: 12px"
+            height="600"
+        >
             <el-table-column v-for="(item, index) in col_headers" :key="index" :prop="item.prop" :label="item.label" :width="item.width"> </el-table-column>
             <el-table-column label="采集状态" width="95px">
                 <template #default="scope">
@@ -19,16 +29,14 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template #default="scope">
-                    <el-tooltip content="查看样本" placement="bottom" effect="light">
-                        <img
-                            src="@/assets/images/ckybxx.png"
-                            @click="
-                                infos = openInfo(scope, 'detail');
-                                showDetail();
-                            "
-                            class="table-btn"
-                        />
-                    </el-tooltip>
+                    <el-button
+                        class="btn"
+                        @click="
+                            infos = openInfo(scope, 'detail');
+                            showDetail();
+                        "
+                        ><p color="green">查看样本</p></el-button
+                    >
                 </template>
             </el-table-column>
         </el-table>
@@ -255,11 +263,11 @@ const accSubmit = (item, staff, phone, date) => {
 const currentPage = ref(1);
 const pageSize = ref(10);
 const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`);
+    // console.log(`${val} items per page`);
     pageSize.value = val;
 };
 const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`);
+    // console.log(`current page: ${val}`);
     currentPage.value = val;
 };
 const pageData = reactive({
@@ -385,6 +393,7 @@ const svg = `
     border-radius: 3px;
     box-sizing: border-box;
 }
+
 .el-pagination {
     font-size: 12px;
     margin: 10px 0px 0px 8px;

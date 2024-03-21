@@ -73,7 +73,7 @@ const MenuList = [
                 path: '/container/transport',
                 name: 'ContainerTransport',
                 meta: {
-                    icon: 'Menu',
+                    icon: 'Switch',
                     title: '样本转移',
                     isLink: '',
                     isHide: false,

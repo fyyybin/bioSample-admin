@@ -9,9 +9,9 @@
                     </ul>
                     <div class="infor_img">
                         <div style="width: 100%; list-style: none; overflow: hidden">
-                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybtj.png" title="样本入库" @click="dialogAdd" />
-                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybtj.png" title="样本出库" @click="dialogVisibleOut = true" />
-                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/ybsc.png" title="样本废弃" @click="dialogVisibleDel = true" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/入库.png" title="样本入库" @click="dialogAdd" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/出库.png" title="样本出库" @click="dialogOut" />
+                            <img style="padding: 0 5px; height: 30px" src="@/assets/images/container/删除.png" title="样本废弃" @click="dialogDel" />
                         </div>
                     </div>
                 </div>
@@ -60,39 +60,37 @@
     </el-dialog>
 
     <el-dialog v-model="dialogVisibleOut" title="样本出库" width="800">
-        <el-form :model="form" label-width="auto" style="max-width: 600px">
-            <el-form-item label="样本源编号">
-                <el-input v-model="form.样本源编号" size="small" style="width: 240px" />
-            </el-form-item>
-            <el-form-item label="样本源姓名">
-                <el-input v-model="form.样本源姓名" size="small" style="width: 240px" />
-            </el-form-item>
-            <el-form-item label="样本类型">
-                <el-select v-model="form.样本类型" size="small" style="width: 240px" placeholder="选择类型">
-                    <el-option label="细胞" value="细胞" />
-                    <el-option label="全血" value="全血" />
-                    <el-option label="DNA" value="DNA" />
-                    <el-option label="RNA" value="RNA" />
-                    <el-option label="分泌物" value="分泌物" />
-                    <el-option label="胆汁" value="胆汁" />
-                </el-select>
-            </el-form-item>
+        <el-row>
+            <el-col :span="12" style="font-size: 14px">
+                <el-form label-width="auto" style="max-width: 600px">
+                    <el-form-item label="样本源编号"> {{ displayCell.样本源编号 }} </el-form-item>
+                    <el-form-item label="样本源年龄"> {{ displayCell.年龄 }} </el-form-item>
+                    <el-form-item label="样本源性别"> {{ displayCell.性别 }} </el-form-item>
+                    <el-form-item label="样本类型"> {{ displayCell.样本类型 }} </el-form-item>
+                    <el-form-item label="样本量"> {{ displayCell.样本量 }} </el-form-item>
+                    <el-form-item label="位置"> {{ displayCell.位置 }} </el-form-item>
+                    <el-form-item label="入库时间"> {{ displayCell.入库时间 }} </el-form-item>
+                </el-form>
+            </el-col>
 
-            <el-form-item label="所属样本组">
-                <el-select v-model="form.所属样本组" size="small" style="width: 240px" placeholder="选择样本组">
-                    <el-option label="浙江大学医学院附属第一医院" value="浙江大学医学院附属第一医院" />
-                    <el-option label="浙江大学医学院附属第四医院" value="浙江大学医学院附属第四医院" />
-                    <el-option label="台州医院" value="台州医院" />
-                    <el-option label="浙江大学医学院附属儿童医院" value="浙江大学医学院附属儿童医院" />
-                </el-select>
-            </el-form-item>
-            <el-form-item label="样本量">
-                <el-input v-model="form.样本量" size="small" style="width: 240px" />
-            </el-form-item>
-            <el-form-item label="路径">
-                <el-input disabled size="small" style="width: 600px" :placeholder="container.breadcrumbCell" />
-            </el-form-item>
-        </el-form>
+            <el-col :span="12" style="width: 45%; font-size: 14px">
+                <el-form :model="formDataOut" label-width="auto" style="max-width: 600px">
+                    <el-form-item style="padding: 0 2px" label="申请人姓名">
+                        <el-input v-model="formDataOut.申请人姓名" />
+                    </el-form-item>
+                    <el-form-item label="申请人联系方式">
+                        <el-input v-model="formDataOut.申请人联系方式" />
+                    </el-form-item>
+                    <el-form-item label="出库时间">
+                        <el-date-picker v-model="formDataOut.出库时间" type="date" placeholder="选择日期" style="width: 100%" />
+                    </el-form-item>
+                    <el-form-item label="研究用途">
+                        <el-input v-model="formDataOut.研究用途" type="textarea" />
+                    </el-form-item>
+                </el-form>
+            </el-col>
+        </el-row>
+
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="dialogVisibleOut = false">取消</el-button>
@@ -100,20 +98,25 @@
             </div>
         </template>
     </el-dialog>
-    <el-dialog v-model="dialogVisibleDel" title="样本废弃" width="1000">
-        <el-table :data="props.msg" style="width: 100%; height: 400px" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55" />
-            <el-table-column prop="位置" label="位置" />
-            <el-table-column prop="样本源编号" width="120" label="样本源编号" />
-            <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
-            <el-table-column prop="样本类型" label="样本类型" />
-            <el-table-column prop="所属样本组" width="210" label="所属样本组" />
-            <el-table-column prop="样本量" label="样本量" />
-        </el-table>
+    <el-dialog v-model="dialogVisibleDel" title="样本废弃" width="600">
+        <el-form :model="formDataDel" label-width="auto" style="max-width: 600px">
+            <el-form-item style="padding: 0 2px" label="申请人姓名">
+                <el-input v-model="formDataDel.申请人姓名" />
+            </el-form-item>
+            <el-form-item label="申请人联系方式">
+                <el-input v-model="formDataDel.申请人联系方式" />
+            </el-form-item>
+            <el-form-item label="废弃时间">
+                <el-date-picker v-model="formDataDel.废弃时间" type="date" placeholder="选择日期" style="width: 100%" />
+            </el-form-item>
+            <el-form-item label="废弃原因">
+                <el-input v-model="formDataDel.废弃原因" type="textarea" />
+            </el-form-item>
+        </el-form>
         <template #footer>
             <div class="dialog-footer">
                 <el-button @click="dialogVisibleDel = false">取消</el-button>
-                <el-button type="primary" @click="Del()"> 删除 </el-button>
+                <el-button type="primary" @click="Del()"> 确认 </el-button>
             </div>
         </template>
     </el-dialog>
@@ -124,7 +127,7 @@ import { ref, reactive } from 'vue';
 import CellBox from '@/components/CellBox.vue';
 import { ElMessage } from 'element-plus';
 import { useContainerStore, useUserStore } from '@/store';
-import { CellAddAPI, CellDelAPI, CellStorageAPI } from '@/http/api';
+import { CellAddAPI, CellDelAPI, CellStorageAPI, CellOutAPI } from '@/http/api';
 const container = useContainerStore();
 const userStore = useUserStore();
 const props = defineProps({
@@ -132,20 +135,24 @@ const props = defineProps({
     name: String,
     level: Number,
 });
-console.log(props.msg);
+// console.log(props.msg);
 
 const addCellList = ref([]);
 const dialogVisibleOut = ref(false);
 const dialogVisibleAdd = ref(false);
 const dialogVisibleDel = ref(false);
 // const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-const form = reactive({
-    位置: '',
-    样本源编号: '',
-    样本源姓名: '',
-    样本类型: '',
-    所属样本组: '',
-    样本量: '',
+const formDataOut = reactive({
+    申请人姓名: '',
+    申请人联系方式: '',
+    出库时间: '',
+    研究用途: '',
+});
+const formDataDel = reactive({
+    申请人姓名: '',
+    申请人联系方式: '',
+    废弃时间: '',
+    废弃原因: '',
 });
 const displayCell = ref([]);
 interface FormData {
@@ -157,7 +164,12 @@ interface FormData {
     样本量: string;
     入库时间: string;
 }
-
+const typeColor = (item) => {
+    if (item == '已入库') return 'success';
+    else if (item == '待入库') return 'warning';
+    else if (item == '废弃审核') return 'warning';
+    else if (item == '出库审核') return 'warning';
+};
 const multipleSelection = ref<FormData[]>([]);
 const handleSelectionChange = (val: FormData[]) => {
     multipleSelection.value = val;
@@ -165,8 +177,11 @@ const handleSelectionChange = (val: FormData[]) => {
 
 const getCell = (data) => {
     displayCell.value = data;
+    // console.log(displayCell.value);
     if (data.样本类型 !== '暂无') {
         container.displayItem = true;
+    } else {
+        container.displayItem = false;
     }
 };
 // 提示组件
@@ -203,45 +218,57 @@ const Add = () => {
         dialogVisibleAdd.value = false;
     }
 };
-
+// 细胞出库
+const dialogOut = () => {
+    if (displayCell.value.样本源编号) {
+        dialogVisibleOut.value = true;
+    } else {
+        ErrorMessage('请选择一个需要出库的细胞');
+    }
+};
 // 细胞出库
 const Out = () => {
-    if (displayCell.value.样本类型 === '暂无') {
-        ErrorMessage('请选择一个需要出库的细胞');
+    if (formDataOut.申请人姓名 === '' || formDataOut.申请人联系方式 === '' || formDataOut.出库时间 === '' || formDataOut.研究用途 == '') {
+        ErrorMessage('内容不能为空！');
     } else {
-        if (form.样本源编号 === '' || form.样本源姓名 === '' || form.样本类型 === '' || form.所属样本组 === '' || form.样本量 === '') {
-            ErrorMessage('内容不能为空！');
-        } else {
-            const now = new Date();
-            const cellData = {
-                样本源编号: form.样本源编号,
-                样本源姓名: form.样本源姓名,
-                样本类型: form.样本类型,
-                所属样本组: form.所属样本组,
-                样本量: form.样本量,
-                入库时间: now.getFullYear() + ('0' + (now.getMonth() + 1)).slice(-2) + ('0' + now.getDate()).slice(-2),
-            };
-            const formData = new FormData();
-            Object.keys(cellData).forEach((key) => {
-                formData.append(key, cellData[key]);
-            });
-            formData.append('name', userStore.userInfo);
-        }
+        const formData = new FormData();
+        Object.keys(formDataOut).forEach((key) => {
+            formData.append(key, formDataOut[key]);
+        });
+        formData.append('样本源编号', displayCell.value.样本源编号);
+        formData.append('name', userStore.userInfo);
+
+        // api
+        CellOutAPI(formData).then((res) => {
+            SuccessMessage('出库样本进入审批');
+            dialogVisibleOut.value = false;
+        });
     }
 };
 
 // 选择需要删除的item
-
+const dialogDel = () => {
+    if (displayCell.value.样本源编号) {
+        dialogVisibleDel.value = true;
+    } else {
+        ErrorMessage('请选择一个需要出库的细胞');
+    }
+};
 const Del = () => {
-    const formData = new FormData();
-    Object.keys(multipleSelection.value).forEach((key) => {
-        formData.append(key, multipleSelection.value[key]);
-    });
-    formData.append('name', userStore.userInfo);
-    CellDelAPI(formData).then((res) => {
-        SuccessMessage('删除样本进入审批');
-        dialogVisibleDel.value = false;
-    });
+    if (formDataOut.申请人姓名 === '' || formDataOut.申请人联系方式 === '' || formDataOut.出库时间 === '' || formDataOut.研究用途 == '') {
+        ErrorMessage('内容不能为空！');
+    } else {
+        const formData = new FormData();
+        Object.keys(formDataDel).forEach((key) => {
+            formData.append(key, formDataDel[key]);
+        });
+        formData.append('样本源编号', displayCell.value.样本源编号);
+        formData.append('name', userStore.userInfo);
+        CellDelAPI(formData).then((res) => {
+            SuccessMessage('删除样本进入审批');
+            dialogVisibleDel.value = false;
+        });
+    }
 };
 </script>
 
@@ -261,7 +288,7 @@ const Del = () => {
             float: left;
             border-radius: 5px 5px 0 0;
             padding-left: 0;
-            background: #71aed7;
+            background: #66c0b8;
             margin: 0;
             text-align: center;
         }

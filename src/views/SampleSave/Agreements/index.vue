@@ -2,7 +2,15 @@
     <div>
         <div class="content">
             <span style="color: red; font-size: small; margin-bottom: 5px">* 当前列表所有患者已签订同意书</span>
-            <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; margin-top: 5px; font-size: 12px">
+            <el-table
+                :data="pageData.datalist"
+                border
+                v-loading="loading"
+                element-loading-text="数据正在加载中..."
+                :element-loading-svg="svg"
+                style="width: 100%; margin-top: 5px; font-size: 12px"
+                height="600"
+            >
                 <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
                 <el-table-column label="知情同意" width="90px">
                     <template #default="scope">
@@ -164,11 +172,11 @@ const disabledFn = (val: any) => {
 const currentPage = ref(1);
 const pageSize = ref(10);
 const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`);
+    // console.log(`${val} items per page`);
     pageSize.value = val;
 };
 const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`);
+    // console.log(`current page: ${val}`);
     currentPage.value = val;
 };
 const pageData = reactive({

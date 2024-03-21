@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             <div class="machineContent">
-                                <div style="width: 70%; font-size: 8px">
+                                <div style="width: 70%; font-size: 12px">
                                     <p style="padding: 0 2px; color: #fff">{{ list.位置 }}</p>
                                     <p style="padding: 0 2px; color: #fff">{{ list.name }}</p>
                                     <p style="padding: 0 2px; color: #fff">数量：{{ list.number }}</p>
@@ -103,39 +103,24 @@
                     <div style="padding-left: 20px; padding-right: 20px">
                         <el-divider style="margin: 0"></el-divider>
                     </div>
-                    <el-scrollbar height="500px">
+                    <el-scrollbar style="height: 90%">
                         <div class="message-list">
                             <div class="message-item" v-for="(item, index) in examineData" :key="index">
                                 <div class="message-content" v-if="item.用户信息 !== 'administrator'">
                                     <span class="message-title">{{ item.样本源编号 }}</span>
-                                    <span class="message-title">申请{{ item.操作 }}</span>
+                                    <span class="message-title">申请&nbsp;&nbsp;{{ item.操作 }}</span>
                                     <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp;样本状态:{{ item.入库状态 }}</span>
                                 </div>
                                 <div class="message-content" v-if="item.用户信息 === 'administrator'">
                                     <span class="message-title">{{ item.用户信息 }}</span>
-                                    <span class="message-title">申请{{ item.操作 }}</span>
+                                    <span class="message-title">申请&nbsp;&nbsp;{{ item.操作 }}</span>
                                     <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp; 样本状态:{{ item.入库状态 }}</span>
                                 </div>
-                                <el-icon @click="examineDetail(item)" style="width: 30px"><InfoFilled /></el-icon>
+                                <el-icon @click="examineDetail(item)" style="width: 30px"><InfoFilled :color="colorType(item.入库状态)" /></el-icon>
                             </div>
                         </div>
                     </el-scrollbar>
                 </div>
-                <!-- <div class="rightFoot">
-                <div class="tableTitle">
-                    <div style="text-align: left; width: 50%; font-weight: bold">各医院资源统计</div>
-                    <div style="text-align: right; width: 50%">机构统计: 4</div>
-                </div>
-                <div style="padding-left: 20px; padding-right: 20px">
-                    <el-divider style="margin: 0"></el-divider>
-                </div>
-                <vue3-seamless-scroll :list="realData" class="scroll" :singleHeight="34">
-                    <div class="item" v-for="(item, index) in realData" :key="index">
-                        <span style="width: 20%; text-align: center">{{ item.name }}</span>
-                        <span style="width: 20%; text-align: center">{{ item.data }}</span>
-                    </div>
-                </vue3-seamless-scroll>
-            </div> -->
             </div>
         </div>
         <el-dialog v-model="ExamineStore.userDialog" title="审核详情" width="800">
@@ -149,7 +134,7 @@
                 <el-table-column fixed="right" prop="入库状态" width="100" label="样本状态" />
             </el-table>
         </el-dialog>
-        <el-dialog v-model="ExamineStore.adminDialog" title="审核详情" width="800">
+        <el-dialog v-model="ExamineStore.adminDialog" title="审核详情" width="1000">
             <el-table :data="examineData" border style="width: 100%; height: 400px">
                 <el-table-column fixed="left" prop="入库状态" width="100" label="样本状态" />
                 <el-table-column prop="样本源编号" width="240" label="样本源编号" />
@@ -159,10 +144,11 @@
                 <el-table-column prop="样本量" width="100" label="样本量" />
                 <el-table-column prop="采集医院" width="210" label="所属样本组" />
                 <el-table-column prop="操作" width="100" label="操作" />
-                <el-table-column fixed="right" label="Operations" width="150">
+                <el-table-column fixed="right" label="Operations" width="200">
                     <template #default="scope">
-                        <el-button plain type="primary" size="small" :disabled="scope.row.入库状态 === '已入库'" @click.prevent="PorR(scope.$index, true)">通过</el-button>
-                        <el-button plain type="danger" size="small" :disabled="scope.row.入库状态 === '已入库'" @click.prevent="PorR(scope.$index, false)">拒绝</el-button>
+                        <el-button plain type="primary" size="small" :disabled="scope.row.入库状态 !== '审核中'" @click.prevent="PorR(scope.$index, true)">通过</el-button>
+                        <el-button plain type="danger" size="small" :disabled="scope.row.入库状态 !== '审核中'" @click.prevent="PorR(scope.$index, false)">拒绝</el-button>
+                        <el-button plain type="primary" size="small" @click.prevent="ExamineDel(scope.$index)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -174,7 +160,7 @@
 import { homeLeftCenTable, autoMachine, realStatistics } from '@/assets/mockdata';
 // import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 import { useUserStore, useExamineStore } from '@/store';
-import { ExamineSearchAPI, ExamineAPI } from '@/http/api';
+import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI } from '@/http/api';
 import { computed } from 'vue';
 
 const LeftCenTable = homeLeftCenTable;
@@ -190,6 +176,15 @@ const examineDetail = (data) => {
         ExamineStore.userDialog = true;
     }
 };
+const colorType = (item) => {
+    if (item === '审核拒绝') {
+        return 'red';
+    } else if (item === '审核中') {
+        return '#ff8657';
+    } else if (item === '已入库' || item === '已转移' || item === '已废弃' || item === '已出库') {
+        return '#009688';
+    }
+};
 searchExamine();
 function PorR(index, o) {
     const formData = new FormData();
@@ -197,7 +192,7 @@ function PorR(index, o) {
     formData.append('样本源编号', data.样本源编号);
     formData.append('操作', data.操作);
     formData.append('用户信息', data.用户信息);
-    formData.append('样本状态', o ? '已入库' : '审核拒绝');
+    formData.append('样本状态', o ? '通过' : '审核拒绝');
     ExamineAPI(formData).then((response) => {
         searchExamine();
     });
@@ -209,6 +204,16 @@ function searchExamine() {
         ExamineStore.examineState = res.data.result;
     });
 }
+const ExamineDel = (index) => {
+    const formData = new FormData();
+    const data = ExamineStore.examineState[index];
+    formData.append('样本源编号', data.样本源编号);
+    formData.append('操作', data.操作);
+    formData.append('用户信息', data.用户信息);
+    ExamineDelAPI(formData).then(() => {
+        searchExamine();
+    });
+};
 </script>
 
 <style scoped lang="scss">
@@ -278,7 +283,7 @@ function searchExamine() {
                 display: flex;
                 height: 150px;
                 justify-content: space-between;
-                padding: 5px 20px 10px 20px;
+                padding: 10px 20px 10px 20px;
                 .machine {
                     border-radius: 6px;
 
@@ -373,7 +378,7 @@ function searchExamine() {
         width: 60px;
         height: 18px;
         background-color: #fff;
-        font-size: 10px;
+        font-size: 12px;
         border-radius: 10px;
         display: flex;
         justify-content: space-around;
@@ -432,12 +437,15 @@ function searchExamine() {
 }
 .message-list {
     display: flex;
+    padding: 5px;
     flex-direction: column;
     .message-item {
         display: flex;
         align-items: center;
+        margin: 5px;
         padding: 10px;
         border: 1px solid #1aa194;
+        border-radius: 5px;
         justify-content: space-between;
         .message-content {
             display: flex;

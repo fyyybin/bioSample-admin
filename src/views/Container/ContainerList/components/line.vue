@@ -181,7 +181,7 @@ const getClickItem = (n) => {
                 float: left;
                 border-radius: 5px 5px 0 0;
                 padding-left: 0;
-                background: #71aed7;
+                background: #66c0b8;
                 margin: 0;
                 text-align: center;
             }

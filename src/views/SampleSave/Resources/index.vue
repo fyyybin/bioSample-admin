@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <span style="color: red; font-size: small; margin-bottom: 5px">* 样本采集需签订知情同意书（样本源默认状态为否）</span>
-                <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; font-size: 12px">
+                <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; font-size: 12px" height="800">
                     <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
                     <el-table-column label="知情同意">
                         <template #default="scope">
@@ -164,7 +164,7 @@ const submitData = (new_name, new_from, new_hospital) => {
         formData.append('样本源类型', new_from);
         formData.append('采集医院', new_hospital);
         sampleFromAdd(formData).then((response) => {
-            console.log(JSON.stringify(response.data));
+            // console.log(JSON.stringify(response.data));
             dialogVisible.value = false;
             tips('success', '样本源注册成功！');
             getData('');
@@ -181,7 +181,7 @@ const getData = (item) => {
             loading.value = false;
         })
         .catch((error) => {
-            console.log(error);
+            // console.log(error);
             loading.value = false;
         });
 };
@@ -236,11 +236,11 @@ const clearData = () => {
 const currentPage = ref(1);
 const pageSize = ref(10);
 const handleSizeChange = (val: number) => {
-    console.log(`${val} items per page`);
+    // console.log(`${val} items per page`);
     pageSize.value = val;
 };
 const handleCurrentChange = (val: number) => {
-    console.log(`current page: ${val}`);
+    // console.log(`current page: ${val}`);
     currentPage.value = val;
 };
 const pageData = reactive({
@@ -295,8 +295,11 @@ onMounted(() => {
         }
     }
     .contentMain {
-        width: 85%;
+        width: 80%;
         height: 100%;
+        border-right: 1px solid var(--el-border-color-light);
+        border-top: 1px solid var(--el-border-color-light);
+        border-bottom: 1px solid var(--el-border-color-light);
     }
 }
 .content-main {
@@ -308,8 +311,6 @@ onMounted(() => {
     padding: 15px;
     overflow-x: hidden;
     background-color: var(--el-bg-color);
-    border: 1px solid var(--el-border-color-light);
-    box-shadow: 0 0 12px rgb(0 0 0 / 5%);
 }
 .input {
     font-size: 13px;

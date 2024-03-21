@@ -41,7 +41,16 @@ export function CellStorageAPI(data) {
 export function CellDelAPI(data) {
     //接口ILoginData接口的变量名
     return service({
-        url: '/container_cell/del/',
+        url: '/container_cel/del/',
+        method: 'POST',
+        data,
+    });
+}
+//出库细胞接口
+export function CellOutAPI(data) {
+    //接口ILoginData接口的变量名
+    return service({
+        url: '/container_cel/out/',
         method: 'POST',
         data,
     });
@@ -66,6 +75,14 @@ export function ExamineSearchAPI(data) {
 export function ExamineAPI(data) {
     return service({
         url: '/examine/',
+        method: 'POST',
+        data,
+    });
+}
+// 审核删除
+export function ExamineDelAPI(data) {
+    return service({
+        url: '/examine/del',
         method: 'POST',
         data,
     });

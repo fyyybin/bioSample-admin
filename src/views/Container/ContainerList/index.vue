@@ -99,7 +99,9 @@ const ContainerBreadList = computed(() => {
         width: 80%;
         height: 100%;
         padding: 0 15px 0 15px;
-        border: 1px solid var(--el-border-color-light);
+        border-right: 1px solid var(--el-border-color-light);
+        border-top: 1px solid var(--el-border-color-light);
+        border-bottom: 1px solid var(--el-border-color-light);
 
         .breadcrumb-box {
             display: flex;
