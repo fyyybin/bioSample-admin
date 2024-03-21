@@ -141,29 +141,29 @@ const col_headers = [
     {
         prop: '采集医院',
         label: '采集医院',
-        width: 220,
+        width: 210,
     },
 ];
 
 const detail_headers = [
     {
         label: '样本信息',
-        cols: '4',
+        cols: 4,
         icon: '../../../../assets/images/yangben.png',
     },
     {
         label: '采集信息',
-        cols: '3',
+        cols: 3,
         icon: '../../../../assets/images/caiji.png',
     },
     {
         label: '运输信息',
-        cols: '3',
+        cols: 3,
         icon: '../../../../assets/images/yunshu.png',
     },
     {
         label: '接收信息',
-        cols: '2',
+        cols: 2,
         icon: '../../../../assets/images/jieshou.png',
     },
 ];
