@@ -1,8 +1,8 @@
 <template>
     <div style="display: flex; justify-content: center">
-        <el-collapse class="con" :loading="loading">
-            <el-collapse-item style="margin: 5px 2px 0px 5px">
-                <template #header>
+        <el-collapse class="con" :loading="loading" v-model="activeName">
+            <el-collapse-item style="margin: 5px 2px 0px 5px" name="1">
+                <template #title>
                     <img :src="getImageUrl(1)" class="table-btn" />
                     <span class="info-title">样本源</span>
                 </template>
@@ -15,8 +15,8 @@
                     </el-descriptions>
                 </div>
             </el-collapse-item>
-            <el-collapse-item style="margin: 5px 2px 0px 5px">
-                <template #header>
+            <el-collapse-item style="margin: 5px 2px 0px 5px" name="2">
+                <template #title>
                     <img :src="getImageUrl(2)" class="table-btn" />
                     <span class="info-title">采集信息</span>
                 </template>
@@ -25,7 +25,8 @@
                         <el-table-column v-for="(item, index) in identifyheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
                         <el-table-column label="采集状态" width="98px">
                             <template #default="scope">
-                                <el-tag :type="typeColor(scope.row.采集状态)">{{ scope.row['采集状态'] }}</el-tag>
+                                <el-tag v-if="scope.row.采集状态=='已完成'" type="success">{{ scope.row['采集状态'] }}</el-tag>
+                                <el-tag v-if="scope.row.采集状态=='未知'" type="success">{{ scope.row['采集状态'] }}</el-tag>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -39,6 +40,7 @@
 import { detail_titles, identifyheaders } from '../variable';
 import { onMounted, ref } from 'vue';
 import { samplefromQuery, collectionSample } from '@/http/api';
+const activeName = ref(['1','2'])
 const props = defineProps({
     params: String,
 });
@@ -62,12 +64,6 @@ const sampleData = () => {
         // console.log(sampleList);
         loading.value = false;
     });
-};
-
-const typeColor = (item) => {
-    if (item == '已完成') return 'success';
-    else if (item == '未知') return 'danger';
-    else return 'warning';
 };
 onMounted(() => {
     () => props;

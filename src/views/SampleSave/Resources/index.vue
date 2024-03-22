@@ -25,19 +25,17 @@
                 <span style="color: red; font-size: small; margin-bottom: 5px">* 样本采集需签订知情同意书（样本源默认状态为否）</span>
                 <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; font-size: 12px" height="800">
                     <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
-                    <el-table-column label="知情同意">
+                    <el-table-column label="知情同意" width="75px">
                         <template #default="scope">
-                            <el-tag :type="tagColor(scope.row.知情同意)">{{ scope.row['知情同意'] }}</el-tag>
+                            <el-tag v-if="scope.row['知情同意'] == '是'" type="success">{{ scope.row['知情同意'] }}</el-tag>
+                            <el-tag v-if="scope.row['知情同意'] == '否'" type="warning">{{ scope.row['知情同意'] }}</el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作">
+                    <el-table-column fixed="right" label="操作" width="190px">
                         <template #default="scope">
-                            <el-tooltip content="编辑样本源" placement="bottom" effect="light">
-                                <img src="@/assets/images/bjyb.png" @click="infos = openInfo(scope, 'modify')" class="table-btn" />
-                            </el-tooltip>
-                            <el-tooltip content="删除样本源" placement="bottom" effect="light">
-                                <img src="@/assets/images/delete.png" @click="(infos = openInfo(scope, 'delete')), (noticeDialog = true)" class="table-btn" />
-                            </el-tooltip>
+                            <el-button plain class="table-btn" v-if="scope.row.知情同意 == '是'" disabled :icon="Edit">编辑</el-button>
+                            <el-button plain class="table-btn" v-if="scope.row.知情同意 == '否'" :icon="Edit" @click="infos = openInfo(scope, 'modify')">编辑</el-button>
+                            <el-button plain class="table-btn" :icon="Delete" @click="(infos = openInfo(scope, 'delete')), (noticeDialog = true)">删除</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -90,7 +88,7 @@
         <!--修改样本源-->
         <el-dialog v-model="agreeDialog" width="430" align-center :close-on-click-modal="false" :destroy-on-close="true" @close="clearData">
             <template #header>
-                知情同意<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
+                知情同意<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div label-width="auto" style="padding: 0px 15px">
                 <div class="input">
@@ -99,7 +97,7 @@
                 </div>
                 <div class="input">
                     <span class="required" style="color: red">* </span>性别：
-                    <el-select v-model="sex" class="textbox" style="margin-left: 25px">
+                    <el-select v-model="sex" class="textbox" style="margin-left: 25px" placeholder="请选择性别">
                         <el-option v-for="(item, index) in sexs" :key="index" :label="item" :value="item"> </el-option>
                     </el-select>
                 </div>
@@ -127,7 +125,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, computed, reactive, ref } from 'vue';
-import { Search, CirclePlus, Refresh } from '@element-plus/icons-vue';
+import { Search, CirclePlus, Refresh, Delete, Edit } from '@element-plus/icons-vue';
 // 表格标题
 import { tableheaders, sampleType, hospital } from '../variable';
 import { ElMessage } from 'element-plus';
@@ -188,13 +186,13 @@ const getData = (item) => {
 // 删除样本源
 const delSample = (item) => {
     sampleFromDel(item)
-        .then((response) => {
+        .then(() => {
             tips('success', '样本源已删除！');
             noticeDialog.value = false;
             loading.value = true;
             getData('');
         })
-        .catch((error) => {
+        .catch(() => {
             loading.value = false;
         });
 };
@@ -207,7 +205,7 @@ const modifySample = (new_year, new_sex, new_date, id) => {
         formData.append('年龄', new_year);
         formData.append('性别', new_sex);
         formData.append('创建时间', new_date);
-        sampleFromAgree(formData).then((res) => {
+        sampleFromAgree(formData).then(() => {
             agreeDialog.value = false;
             tips('success', '样本源已修改！');
             getData('');
@@ -264,10 +262,6 @@ const handleNodeClick = (data) => {
     count.value = true;
     loading.value = true;
     getData(data.label);
-};
-const tagColor = (item) => {
-    if (item == '是') return 'success';
-    else return 'warning';
 };
 onMounted(() => {
     if (!count.value) getData('');
@@ -339,9 +333,15 @@ onMounted(() => {
     margin: 10px 0px 0px 8px;
 }
 .table-btn {
-    width: 15px;
-    height: 15px;
+    width: 75px;
+    height: 30px;
     margin: 0px 5px 0px 0px;
+    font-size: 13px;
+    font-weight: bold;
+    /* background: #318ccb; */
+    border: 1px solid #009688;
+    border-radius: 3px;
+    box-sizing: border-box;
 }
 .info {
     width: 1000px;

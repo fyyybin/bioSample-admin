@@ -1,8 +1,8 @@
 <template>
     <div style="display: flex; justify-content: center">
-        <el-collapse class="con">
+        <el-collapse class="con" v-model="activeName">
             <el-collapse-item style="margin: 5px 2px 0px 5px" v-for="(item, index) in detail_headers" :key="index">
-                <template #header>
+                <template #title>
                     <img :src="getImageUrl(item.icon)" class="table-btn" />
                     <span class="info-title">{{ item.label }}</span>
                 </template>
@@ -23,6 +23,7 @@
 import { detail_headers, detail_titles } from '../../variable';
 import { onMounted, ref } from 'vue';
 import { collectionInfo } from '@/http/api';
+const activeName = ref(['1','2'])
 const props = defineProps({
     params: String,
     content: String,
@@ -37,7 +38,11 @@ const details = ref({});
 const loading = ref(true);
 // 样本详细信息
 const getData = () => {
-    collectionInfo(querys).then((response) => {
+    const formData = new FormData();
+    Object.keys(querys).forEach((key) => {
+        formData.append(key, querys[key]);
+    });
+    collectionInfo(formData).then((response) => {
         let result = response.data;
         details.value = result.data;
         loading.value = false;

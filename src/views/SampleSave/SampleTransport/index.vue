@@ -12,30 +12,37 @@
             height="600"
         >
             <el-table-column v-for="(item, index) in col_headers" :key="index" :prop="item.prop" :label="item.label" :width="item.width"> </el-table-column>
-            <el-table-column label="采集状态" width="95px">
+            <el-table-column label="采集状态" width="85px">
                 <template #default="scope">
-                    <el-tag :type="typeColor(scope.row.采集状态)" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['采集状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.采集状态 == '已完成'" type="success" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['采集状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.采集状态 == '未知'" type="danger" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['采集状态'] }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="运输状态" width="95px">
+            <el-table-column label="运输状态" width="85px">
                 <template #default="scope">
-                    <el-tag :type="typeColor(scope.row.运输状态)" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['运输状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.运输状态 == '已完成'" type="success" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['运输状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.运输状态 == '运输中'" type="warning" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['运输状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.运输状态 == '未知'" type="danger" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['运输状态'] }}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="接收状态" width="95px">
+            <el-table-column label="接收状态" width="85px">
                 <template #default="scope">
-                    <el-tag :type="typeColor(scope.row.接收状态)" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['接收状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.接收状态 == '已完成'" type="success" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['接收状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.接收状态 == '未接收'" type="warning" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['接收状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.接收状态 == '未知'" type="danger" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['接收状态'] }}</el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作">
                 <template #default="scope">
                     <el-button
-                        class="btn"
+                        plain
+                        class="table-btn"
+                        :icon="Search"
                         @click="
                             infos = openInfo(scope, 'detail');
                             showDetail();
                         "
-                        ><p color="green">查看样本</p></el-button
+                        >详细</el-button
                     >
                 </template>
             </el-table-column>
@@ -62,23 +69,23 @@
 
         <!--采集按钮对话框-->
         <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #title>
-                采集信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
+            <template #header>
+                采集信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
-                <span class="sample-key">采集时间：</span>
+                <span class="sample-key">采集时间</span>
                 <el-date-picker v-model="col_date" type="date" style="width: 220px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
             </div>
             <div class="info">
-                <span class="sample-key">采集医院：</span>
+                <span class="sample-key">采集医院</span>
                 <span class="sample-value">{{ infos['采集医院'] }}</span>
             </div>
             <div class="info">
-                <span class="sample-key">样本类型：</span>
+                <span class="sample-key">样本类型</span>
                 <span class="sample-value">{{ infos['样本类型'] }}</span>
             </div>
             <div class="info">
-                <span class="sample-key">预处理：</span>
+                <span class="sample-key">预处理</span>
                 <span class="sample-value">{{ infos['预处理'] }}</span>
             </div>
             <template #footer>
@@ -90,23 +97,23 @@
 
         <!--运输按钮对话框-->
         <el-dialog v-model="tran_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #title>
-                运输信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
+            <template #header>
+                运输信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
-                <span class="sample-key">运输方：</span>
+                <span class="sample-key">运输方</span>
                 <el-input class="sample-value" v-model="tran_name" placeholder="请输入公司名称" clearable></el-input>
             </div>
             <div class="info">
-                <span class="sample-key">负责人：</span>
+                <span class="sample-key">负责人</span>
                 <el-input class="sample-value" v-model="tran_staff" placeholder="请输入负责人姓名" clearable></el-input>
             </div>
             <div class="info">
-                <span class="sample-key">联系方式：</span>
+                <span class="sample-key">联系方式</span>
                 <el-input class="sample-value" v-model="tran_phone" placeholder="请输入负责人联系方式" clearable></el-input>
             </div>
             <div class="info">
-                <span class="sample-key">运出时间：</span>
+                <span class="sample-key">运出时间</span>
                 <el-date-picker v-model="tran_date" type="date" style="width: 220px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
             </div>
             <template #footer>
@@ -118,19 +125,19 @@
 
         <!--接收按钮对话框-->
         <el-dialog v-model="acc_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
-            <template #title>
-                接收信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
+            <template #header>
+                接收信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
             <div class="info">
-                <span class="sample-key">接收人：</span>
+                <span class="sample-key">接收人</span>
                 <el-input class="sample-value" v-model="acc_staff" placeholder="请输入负责人姓名" clearable></el-input>
             </div>
             <div class="info">
-                <span class="sample-key">联系方式：</span>
+                <span class="sample-key">联系方式</span>
                 <el-input class="sample-value" v-model="acc_phone" placeholder="请输入负责人联系方式" clearable></el-input>
             </div>
             <div class="info">
-                <span class="sample-key">接受时间：</span>
+                <span class="sample-key">接受时间</span>
                 <el-date-picker v-model="acc_date" type="date" style="width: 220px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
             </div>
             <template #footer>
@@ -151,6 +158,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { col_headers } from '../variable';
 import { ElMessage } from 'element-plus';
 import infoDetail from './component/info_dialog.vue';
+import { Search } from '@element-plus/icons-vue';
 import { collectionSearch, collectionCom, collectionTrans, collectionAcc } from '@/http/api';
 const collectList = ref([]);
 const loading = ref(true);
@@ -170,11 +178,6 @@ const tran_date = ref('');
 const acc_staff = ref('');
 const acc_phone = ref('');
 const acc_date = ref('');
-const typeColor = (item) => {
-    if (item == '已完成') return 'primary';
-    else if (item == '未知') return 'danger';
-    else return 'warning';
-};
 
 const id = ref('');
 const content = ref('');
@@ -184,14 +187,6 @@ const showDetail = () => {
     const sample = infos.value;
     (id.value = sample['样本源编号']), (content.value = sample['样本类型']), (hospital.value = sample['采集医院']);
     info_dialog.value = true;
-    /*router.push({
-        name: 'detail',
-        query: {
-            id: sample["样本源编号"],
-            content: sample["样本类型"],
-            hospital: sample["采集医院"]
-        }
-    });*/
 };
 
 // 所有采集需求
@@ -207,10 +202,13 @@ const colSubmit = (item, date) => {
     let params = {
         样本源编号: item['样本源编号'],
         样本类型: item['样本类型'],
-        采集医院: item['采集医院'],
         采集时间: date,
     };
-    collectionCom(params).then((response) => {
+    const formData = new FormData();
+    Object.keys(params).forEach((key) => {
+        formData.append(key, params[key]);
+    });
+    collectionCom(formData).then(() => {
         // console.log(JSON.stringify(response.data));
         col_dialog.value = false;
         mess(1);
@@ -225,13 +223,16 @@ const tranSubmit = (item, name, staff, phone, date) => {
         let params = {
             样本源编号: item['样本源编号'],
             样本类型: item['样本类型'],
-            采集医院: item['采集医院'],
             运输方: name,
             负责人: staff,
             负责人联系方式: phone,
             运出时间: date,
         };
-        collectionTrans(params).then((response) => {
+        const formData = new FormData();
+        Object.keys(params).forEach((key) => {
+            formData.append(key, params[key]);
+        });
+        collectionTrans(formData).then(() => {
             // console.log(JSON.stringify(response.data));
             tran_dialog.value = false;
             mess(2);
@@ -247,12 +248,15 @@ const accSubmit = (item, staff, phone, date) => {
         let params = {
             样本源编号: item['样本源编号'],
             样本类型: item['样本类型'],
-            采集医院: item['采集医院'],
             接收人: staff,
             接收人联系方式: phone,
             接收时间: date,
         };
-        collectionAcc(params).then((response) => {
+        const formData = new FormData();
+        Object.keys(params).forEach((key) => {
+            formData.append(key, params[key]);
+        });
+        collectionAcc(formData).then(() => {
             // console.log(JSON.stringify(response.data));
             acc_dialog.value = false;
             mess(3);
@@ -267,7 +271,6 @@ const handleSizeChange = (val: number) => {
     pageSize.value = val;
 };
 const handleCurrentChange = (val: number) => {
-    // console.log(`current page: ${val}`);
     currentPage.value = val;
 };
 const pageData = reactive({
@@ -363,7 +366,6 @@ const svg = `
         padding-right: 15px;
         width: 100px;
         text-align: end;
-        font-weight: bold;
         color: #000;
         font-size: 15px;
         display: flex;
@@ -399,8 +401,13 @@ const svg = `
     margin: 10px 0px 0px 8px;
 }
 .table-btn {
-    width: 15px;
-    height: 100%;
-    display: flex;
+    width: 75px;
+    height: 30px;
+    font-size: 13px;
+    font-weight: bold;
+    /* background: #318ccb; */
+    border: 1px solid #009688;
+    border-radius: 3px;
+    box-sizing: border-box;
 }
 </style>

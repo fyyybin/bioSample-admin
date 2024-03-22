@@ -14,7 +14,7 @@
                 <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
                 <el-table-column label="知情同意" width="90px">
                     <template #default="scope">
-                        <el-tag :type="tagColor(scope.row.知情同意)">{{ scope.row['知情同意'] }}</el-tag>
+                        <el-tag v-if="scope.row['知情同意'] == '是'" type="success">{{ scope.row['知情同意'] }}</el-tag>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="280px">
@@ -53,26 +53,26 @@
                 </template>
             </el-pagination>
 
-            <el-dialog v-model="dialogVisible" width="500" :close-on-click-modal="false" @close="clearData" style="font-size: 18px">
+            <el-dialog v-model="dialogVisible" width="500" :close-on-click-modal="false" @close="clearData">
                 <template #header>
-                    采集信息<el-tag type="primary" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
+                    采集信息<el-tag type="success" style="margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
                 </template>
                 <div class="info">
-                    <span class="sample-key">创建时间：</span>
+                    <span class="sample-key">创建时间</span>
                     <el-date-picker v-model="sample_date" type="date" style="width: 250px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
                 </div>
                 <div class="info">
-                    <span class="sample-key">样本类型：</span>
+                    <span class="sample-key">样本类型</span>
                     <el-select v-model="sample_content" class="sample-value" placeholder="请选择类型">
                         <el-option v-for="(item, index) in content" :key="index" :label="item" :value="item"></el-option>
                     </el-select>
                 </div>
                 <div class="info">
-                    <span class="sample-key">样本量(ul)：</span>
+                    <span class="sample-key">样本量(ul)</span>
                     <el-input class="sample-value" v-model="sample_valume" placeholder="请输入样本量"></el-input>
                 </div>
                 <div class="info">
-                    <span class="sample-key">预处理：</span>
+                    <span class="sample-key">预处理</span>
                     <el-select v-model="sample_pred" class="sample-value" placeholder="是否经过预处理">
                         <el-option v-for="(item, index) in pred" :key="index" :label="item" :value="item"></el-option>
                     </el-select>
@@ -84,7 +84,8 @@
                 </template>
             </el-dialog>
         </div>
-        <el-dialog v-model="infoDialog" width="60%" title="所有样本" draggable :close-on-click-modal="false" :destroy-on-close="true">
+        <el-dialog v-model="infoDialog" width="60%" draggable :close-on-click-modal="false" :destroy-on-close="true">
+            <template #header>所有样本</template>
             <fromInfo :params="id"></fromInfo>
         </el-dialog>
     </div>
@@ -144,7 +145,7 @@ const submitData = (date, valume, content, pred) => {
     if (date == '' || valume == '' || content == '' || pred == '') {
         tips(1);
     } else {
-        infos.value['样本创建时间'] = date;
+        infos.value['采集时间'] = date;
         infos.value['样本类型'] = content;
         infos.value['样本量'] = valume;
         infos.value['预处理'] = pred;
@@ -153,7 +154,7 @@ const submitData = (date, valume, content, pred) => {
         Object.keys(infos.value).forEach((key) => {
             formData.append(key, infos.value[key]);
         });
-        collectionAdd(formData).then((response) => {
+        collectionAdd(formData).then(() => {
             // console.log(JSON.stringify(response.data));
             dialogVisible.value = false;
             tips(2);
@@ -211,10 +212,6 @@ const tips = (item) => {
             break;
     }
 };
-const tagColor = (item) => {
-    if (item == '是') return 'success';
-    else return 'warning';
-};
 </script>
 
 <style scoped>
@@ -246,7 +243,6 @@ const tagColor = (item) => {
         padding-right: 15px;
         width: 100px;
         text-align: end;
-        font-weight: bold;
         color: #000;
         font-size: 15px;
         display: flex;
