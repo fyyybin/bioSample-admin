@@ -73,37 +73,36 @@ const tableheaders = [
     {
         prop: '样本源编号',
         label: '样本源编号',
-        width: 200,
+        width: 240,
     },
     {
         prop: '采集医院',
         label: '采集医院',
-        width: 220,
+        width: 240,
     },
     {
         prop: '样本源类型',
         label: '样本源类型',
-        width: 90,
+        width: 100,
     },
     {
         prop: '样本源姓名',
         label: '样本源姓名',
-        width: 90,
+        width: 100,
     },
     {
         prop: '性别',
         label: '性别',
-        width: 60,
+        width: 100,
     },
     {
         prop: '年龄',
         label: '年龄',
-        width: 60,
+        width: 100,
     },
     {
         prop: '样本创建时间',
         label: '样本创建时间',
-        width: 100,
     },
 ];
 
