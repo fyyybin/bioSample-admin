@@ -74,8 +74,8 @@ const nodeDataOld = ref([]);
 const nodeDataNew = ref([]);
 const oldList = ref('');
 const newList = ref('');
-const selectOld = ref({});
-const selectNew = ref({});
+const AllOldCell = ref({});
+const AllNewCell = ref({});
 
 const getCheckedNodes1 = () => {
     if (treeRefOld.value!.getCheckedNodes(false, false).length === 1 && treeRefOld.value!.getCheckedNodes(false, false)[0].level === 6) {
@@ -106,20 +106,35 @@ const resetNodes2 = () => {
     treeRefNew.value!.setCheckedKeys([], false);
 };
 const getOldCell = (data) => {
-    if (data.样本类型 === '暂无') {
-        ErrorMessage('请选择需要转移的样本！');
-    } else {
-        selectOld.value = data;
-        selectOld.value.用户信息 = userStore.userInfo;
-    }
+    data.forEach((value, index) => {
+        if (value.样本类型 === '暂无') {
+            ErrorMessage('请选择需要转移的样本！');
+            return;
+        }
+        if (index === data.length - 1) {
+            AllOldCell.value.样本信息 = data;
+            AllOldCell.value.用户信息 = userStore.userInfo;
+        }
+    });
+    // selectOld.value.用户信息 = userStore.userInfo;
 };
 const getNewCell = (data) => {
-    if (data.样本类型 !== '暂无') {
-        ErrorMessage('请选择容器中空的位置！');
-    } else {
-        data['位置'] = newList.value + '/' + data.POS;
-        selectNew.value = data;
-    }
+    data.forEach((value, index) => {
+        if (value.样本类型 !== '暂无') {
+            ErrorMessage('请选择容器中空的位置！');
+            return;
+        }
+        if (index === data.length - 1) {
+            AllNewCell.value.样本信息 = data;
+            AllNewCell.value.位置 = newList.value;
+        }
+    });
+    // if (data.样本类型 !== '暂无') {
+    //     ErrorMessage('请选择容器中空的位置！');
+    // } else {
+    //     data['位置'] = newList.value + '/' + data.POS;
+    //     selectNew.value = data;
+    // }
 };
 
 // 提示组件
@@ -133,13 +148,17 @@ const SuccessMessage = (message) => {
     });
 };
 const trans = () => {
-    const data = { oldData: JSON.stringify(selectOld.value), newData: JSON.stringify(selectNew.value) };
-    CellTransAPI(data).then((res) => {
-        SuccessMessage('转移审批进入审核阶段！');
-    });
-    CellAPI().then((res) => {
-        container.getContainerList(res.data.data);
-    });
+    if (AllOldCell.value.样本信息.length === AllNewCell.value.样本信息.length) {
+        const data = { oldData: JSON.stringify(AllOldCell.value), newData: JSON.stringify(AllNewCell.value) };
+        CellTransAPI(data).then((res) => {
+            SuccessMessage('转移审批进入审核阶段！');
+        });
+        CellAPI().then((res) => {
+            container.getContainerList(res.data.data);
+        });
+    } else {
+        ErrorMessage('旧容器和新容器的所选数量不一致!');
+    }
 };
 </script>
 <style scoped lang="scss">

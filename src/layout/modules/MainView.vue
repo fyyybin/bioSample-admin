@@ -3,9 +3,9 @@
     <el-main>
         <router-view v-slot="{ Component, route }">
             <transition appear name="fade-transform" mode="out-in">
-                <keep-alive>
-                    <component :is="Component" v-if="isRouterShow" :key="route.fullPath" />
-                </keep-alive>
+                <!-- <keep-alive> -->
+                <component :is="Component" v-if="isRouterShow" :key="route.fullPath" />
+                <!-- </keep-alive> -->
             </transition>
         </router-view>
     </el-main>

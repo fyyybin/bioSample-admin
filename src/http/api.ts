@@ -182,3 +182,9 @@ export function collectionAcc(item) {
         data: item,
     });
 }
+export function hospitalDataAPI() {
+    return service({
+        url: '/hosSearch/',
+        method: 'POST',
+    });
+}

@@ -47,7 +47,8 @@
             <el-table-column prop="采集医院" width="210" label="所属样本组" />
             <el-table-column fixed="right" prop="入库状态" width="100" label="样本状态">
                 <template #default="scope">
-                    <el-tag :type="scope.row.入库状态 === '待入库' ? 'primary' : 'warning'">{{ scope.row.入库状态 }}</el-tag>
+                    <el-tag v-if="scope.row.入库状态 === '待入库'" type="success">{{ scope.row.入库状态 }}</el-tag>
+                    <el-tag v-if="scope.row.入库状态 !== '待入库'" type="warning">{{ scope.row.入库状态 }}</el-tag>
                 </template>
             </el-table-column>
         </el-table>
@@ -62,14 +63,11 @@
     <el-dialog v-model="dialogVisibleOut" title="样本出库" width="800">
         <el-row>
             <el-col :span="12" style="font-size: 14px">
-                <el-form label-width="auto" style="max-width: 600px">
-                    <el-form-item label="样本源编号"> {{ displayCell.样本源编号 }} </el-form-item>
-                    <el-form-item label="样本源年龄"> {{ displayCell.年龄 }} </el-form-item>
-                    <el-form-item label="样本源性别"> {{ displayCell.性别 }} </el-form-item>
-                    <el-form-item label="样本类型"> {{ displayCell.样本类型 }} </el-form-item>
-                    <el-form-item label="样本量"> {{ displayCell.样本量 }} </el-form-item>
-                    <el-form-item label="位置"> {{ displayCell.位置 }} </el-form-item>
-                    <el-form-item label="入库时间"> {{ displayCell.入库时间 }} </el-form-item>
+                <el-form v-for="(item, index) of AllDisplayCell" :key="index" label-width="auto" style="max-width: 600px">
+                    <el-form-item label="样本源编号"> {{ item.样本源编号 }} </el-form-item>
+                    <el-form-item label="样本类型"> {{ item.样本类型 }} </el-form-item>
+                    <!-- <el-form-item label="样本量"> {{ item.样本量 }} </el-form-item> -->
+                    <!-- <el-form-item label="位置"> {{ item.位置 }} </el-form-item> -->
                 </el-form>
             </el-col>
 
@@ -85,7 +83,24 @@
                         <el-date-picker v-model="formDataOut.出库时间" type="date" placeholder="选择日期" style="width: 100%" />
                     </el-form-item>
                     <el-form-item label="研究用途">
-                        <el-input v-model="formDataOut.研究用途" type="textarea" />
+                        <el-select v-model="formDataOut.研究用途" placeholder="选择具体研究用途">
+                            <el-option label="组织细胞分子等实验验证" value="组织细胞分子等实验验证" />
+                            <el-option label="样本组学检测" value="样本组学检测" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="样本组学检测" v-if="formDataOut.研究用途 === '样本组学检测'">
+                        <el-select v-model="formDataOut.样本组学检测" placeholder="选择具体内容">
+                            <el-option label="全基因组测序" value="全基因组测序" />
+                            <el-option label="转录组测序" value="转录组测序" />
+                            <el-option label="miRNA测序" value="miRNA测序" />
+                            <el-option label="miRNA芯片" value="miRNA芯片" />
+                            <el-option label="circRNA测序" value="circRNA测序" />
+                            <el-option label="IncRNA测序" value="IncRNA测序" />
+                            <el-option label="代谢组学" value="代谢组学" />
+                            <el-option label="蛋白组学" value="蛋白组学" />
+                            <el-option label="外泌体测序" value="外泌体测序" />
+                            <el-option label="全外显子测序" value="全外显子测序" />
+                        </el-select>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -147,6 +162,7 @@ const formDataOut = reactive({
     申请人联系方式: '',
     出库时间: '',
     研究用途: '',
+    样本组学检测: '',
 });
 const formDataDel = reactive({
     申请人姓名: '',
@@ -155,6 +171,8 @@ const formDataDel = reactive({
     废弃原因: '',
 });
 const displayCell = ref([]);
+const AllDisplayCell = ref([]);
+
 interface FormData {
     位置: number;
     样本源编号: string;
@@ -164,24 +182,21 @@ interface FormData {
     样本量: string;
     入库时间: string;
 }
-const typeColor = (item) => {
-    if (item == '已入库') return 'success';
-    else if (item == '待入库') return 'warning';
-    else if (item == '废弃审核') return 'warning';
-    else if (item == '出库审核') return 'warning';
-};
 const multipleSelection = ref<FormData[]>([]);
 const handleSelectionChange = (val: FormData[]) => {
     multipleSelection.value = val;
 };
 
 const getCell = (data) => {
-    displayCell.value = data;
-    // console.log(displayCell.value);
-    if (data.样本类型 !== '暂无') {
-        container.displayItem = true;
-    } else {
-        container.displayItem = false;
+    AllDisplayCell.value = data;
+
+    if (data.length === 1) {
+        if (data[0].样本类型 !== '暂无') {
+            displayCell.value = data[0];
+            container.displayItem = true;
+        } else {
+            container.displayItem = false;
+        }
     }
 };
 // 提示组件
@@ -197,33 +212,59 @@ const SuccessMessage = (message) => {
 
 // 细胞入库
 const dialogAdd = () => {
-    if (displayCell.value.样本类型 !== '暂无') {
-        ErrorMessage('请选择一个空闲的位置！');
+    let w = 0;
+    if (AllDisplayCell.value.length === 0) {
+        ErrorMessage('请选择空闲入库位置！');
     } else {
-        CellAddAPI().then((res) => {
-            addCellList.value = res.data.result;
+        AllDisplayCell.value.forEach((obj) => {
+            w += Object.keys(obj).length;
         });
-        dialogVisibleAdd.value = true;
+        // 判断是否选择 有细胞的位置和无细胞的位置，若都选择了则出现提示
+        if (w !== AllDisplayCell.value.length * Object.keys(AllDisplayCell.value[0]).length || Object.keys(AllDisplayCell.value[0]).length !== 2) {
+            ErrorMessage('选择的位置中已存在入库细胞！');
+        } else {
+            CellAddAPI().then((res) => {
+                addCellList.value = res.data.result;
+            });
+            dialogVisibleAdd.value = true;
+        }
     }
 };
 const Add = () => {
-    if (multipleSelection.value[0].入库状态 === '审核中') {
-        ErrorMessage('该样本已在入库审核！');
-    } else {
+    var Error = false;
+    for (const item of multipleSelection.value) {
+        if (item.入库状态 === '审核中') {
+            ErrorMessage('编号:' + item.样本源编号 + '该样本已在入库审核！');
+            Error = true;
+        }
+    }
+    if (!Error) {
         const formData = new FormData();
-        formData.append('样本源编号', multipleSelection.value[0].样本源编号);
-        formData.append('位置', container.breadcrumbCell + '/' + displayCell.value.POS);
+        multipleSelection.value.forEach((value, index) => {
+            formData.append(value.样本源编号, container.breadcrumbCell + '/' + AllDisplayCell.value[index].POS);
+        });
         formData.append('name', userStore.userInfo);
-        CellStorageAPI(formData).then((res) => {});
+        CellStorageAPI(formData).then((res) => {
+            SuccessMessage('入库样本进入审批');
+        });
         dialogVisibleAdd.value = false;
     }
 };
 // 细胞出库
 const dialogOut = () => {
-    if (displayCell.value.样本源编号) {
-        dialogVisibleOut.value = true;
+    let w = 0;
+    if (AllDisplayCell.value.length === 0) {
+        ErrorMessage('请选择单个或者复数个需要出库的细胞！');
     } else {
-        ErrorMessage('请选择一个需要出库的细胞');
+        AllDisplayCell.value.forEach((obj) => {
+            w += Object.keys(obj).length;
+        });
+        // 判断是否选择 有细胞的位置和无细胞的位置，若都选择了则出现提示
+        if (w !== AllDisplayCell.value.length * Object.keys(AllDisplayCell.value[0]).length || Object.keys(AllDisplayCell.value[0]).length === 2) {
+            ErrorMessage('选择的位置中有空位！');
+        } else {
+            dialogVisibleOut.value = true;
+        }
     }
 };
 // 细胞出库
@@ -235,7 +276,9 @@ const Out = () => {
         Object.keys(formDataOut).forEach((key) => {
             formData.append(key, formDataOut[key]);
         });
-        formData.append('样本源编号', displayCell.value.样本源编号);
+        AllDisplayCell.value.forEach((value) => {
+            formData.append(value.样本源编号, container.breadcrumbCell + '/' + value.POS);
+        });
         formData.append('name', userStore.userInfo);
 
         // api
@@ -248,21 +291,28 @@ const Out = () => {
 
 // 选择需要删除的item
 const dialogDel = () => {
-    if (displayCell.value.样本源编号) {
-        dialogVisibleDel.value = true;
+    let w = 0;
+    AllDisplayCell.value.forEach((obj) => {
+        w += Object.keys(obj).length;
+    });
+    // 判断是否选择 有细胞的位置和无细胞的位置，若都选择了则出现提示
+    if (w !== AllDisplayCell.value.length * Object.keys(AllDisplayCell.value[0]).length || Object.keys(AllDisplayCell.value[0]).length === 2) {
+        ErrorMessage('请选择单个或者复数个需要废弃的细胞！');
     } else {
-        ErrorMessage('请选择一个需要出库的细胞');
+        dialogVisibleDel.value = true;
     }
 };
 const Del = () => {
-    if (formDataOut.申请人姓名 === '' || formDataOut.申请人联系方式 === '' || formDataOut.出库时间 === '' || formDataOut.研究用途 == '') {
+    if (formDataDel.申请人姓名 === '' || formDataDel.申请人联系方式 === '' || formDataDel.废弃时间 === '' || formDataDel.废弃原因 == '') {
         ErrorMessage('内容不能为空！');
     } else {
         const formData = new FormData();
         Object.keys(formDataDel).forEach((key) => {
             formData.append(key, formDataDel[key]);
         });
-        formData.append('样本源编号', displayCell.value.样本源编号);
+        AllDisplayCell.value.forEach((value) => {
+            formData.append(value.样本源编号, container.breadcrumbCell + '/' + value.POS);
+        });
         formData.append('name', userStore.userInfo);
         CellDelAPI(formData).then((res) => {
             SuccessMessage('删除样本进入审批');

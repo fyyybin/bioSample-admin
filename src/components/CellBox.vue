@@ -10,7 +10,7 @@
             <div v-for="(item, index) in num2" :key="index" class="cell_item">
                 <p>{{ item }}</p>
             </div>
-            <div v-for="index of 81" :key="index" class="cell_item2" :style="mouseclick === index ? 'background-color:#009688' : ''" @click="boxDetail(index)">
+            <div v-for="index of 81" :key="index" class="cell_item2" :style="mouseclick.indexOf(index) === -1 ? '' : 'background-color:#009688'" @click="boxDetail(index)">
                 <el-popover placement="bottom" :width="200" trigger="hover" :show-arrow="false">
                     <template #reference>
                         <img :src="images[searchCellBox(props.msg, index).样本类型]" />
@@ -42,7 +42,7 @@ import { ref } from 'vue';
 const props = defineProps({
     msg: Array,
 });
-const mouseclick = ref(0);
+const mouseclick = ref([]);
 const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const num2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const images = {
@@ -54,24 +54,40 @@ const images = {
     分泌物: FMW,
     暂无: '',
 };
-const searchCellBox = (data, i) => {
+const CellBox = (data, indexs) => {
+    const result = [];
+    for (const num of indexs) {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].POS === num) {
+                result.push(data[i]);
+                break;
+            }
+            if (i === data.length - 1) {
+                result.push({ 样本类型: '暂无', POS: num });
+            }
+        }
+    }
+    return result;
+};
+const searchCellBox = (data, index) => {
     for (const item of data) {
-        if (item.POS === i) {
+        if (item.POS === index) {
             return item;
         }
     }
-    return {
-        样本类型: '暂无',
-        POS: i,
-    };
+    return { 样本类型: '暂无', POS: index };
 };
 //定义要发送的事件名称，如 aList
 const emit = defineEmits(['cellDetail']);
 
 //点击后将aList事件发送给父组件
 const boxDetail = (index) => {
-    mouseclick.value = index;
-    emit('cellDetail', searchCellBox(props.msg, index));
+    if (mouseclick.value.indexOf(index) === -1) {
+        mouseclick.value.push(index);
+    } else {
+        mouseclick.value.splice(mouseclick.value.indexOf(index), 1);
+    }
+    emit('cellDetail', CellBox(props.msg, mouseclick.value));
 };
 
 // const boxDetail = (index) => {

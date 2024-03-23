@@ -35,9 +35,9 @@
                                     </div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="sampleTotal" label="样本资源总数（份）" />
-                            <el-table-column prop="itemTotal" label="项目总数（份）" />
-                            <el-table-column prop="resultTotal" label="成果总数（份）" />
+                            <el-table-column prop="drkNum" label="待入库数量" />
+                            <el-table-column prop="yrkNum" label="已入库数量" />
+                            <el-table-column prop="cxNum" label="测序样本数量" />
                         </el-table>
                     </div>
                 </div>
@@ -79,20 +79,20 @@
                 <div class="rightHead">
                     <div class="circle" style="border: 10px solid #ff8657">
                         <div>
-                            待处理 <br />
-                            <span> 5 </span>
+                            审核中 <br />
+                            <span> {{ ExamineStore.inProcess }} </span>
                         </div>
                     </div>
-                    <div class="circle" style="border: 10px solid #476bff">
+                    <div class="circle" style="border: 10px solid #009688">
                         <div>
-                            已处理 <br />
-                            <span> 5 </span>
+                            已通过 <br />
+                            <span> {{ ExamineStore.approved }} </span>
                         </div>
                     </div>
-                    <div class="circle" style="border: 10px solid #0faeff">
+                    <div class="circle" style="border: 10px solid red">
                         <div>
-                            已完结 <br />
-                            <span> 5 </span>
+                            未通过 <br />
+                            <span> {{ ExamineStore.notApproved }} </span>
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,14 @@
                         <el-divider style="margin: 0"></el-divider>
                     </div>
                     <el-scrollbar style="height: 90%">
-                        <div class="message-list">
+                        <div class="message-list" v-if="(examineData = [])">
+                            <el-row class="row-bg" justify="space-between" style="padding-top: 10px">
+                                <el-col :span="6"><div class="grid-content ep-bg-purple">--------</div></el-col>
+                                <el-col :span="6"><div class="grid-content ep-bg-purple-light">暂无审批</div></el-col>
+                                <el-col :span="6"><div class="grid-content ep-bg-purple">--------</div></el-col>
+                            </el-row>
+                        </div>
+                        <div class="message-list" v-else>
                             <div class="message-item" v-for="(item, index) in examineData" :key="index">
                                 <div class="message-content" v-if="item.用户信息 !== 'administrator'">
                                     <span class="message-title">{{ item.样本源编号 }}</span>
@@ -157,18 +164,18 @@
 </template>
 
 <script setup lang="ts" name="home">
-import { homeLeftCenTable, autoMachine, realStatistics } from '@/assets/mockdata';
+import { homeLeftCenTable, autoMachine } from '@/assets/mockdata';
 // import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 import { useUserStore, useExamineStore } from '@/store';
-import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI } from '@/http/api';
-import { computed } from 'vue';
+import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI, hospitalDataAPI } from '@/http/api';
+import { computed, ref } from 'vue';
 
-const LeftCenTable = homeLeftCenTable;
 const autoData = autoMachine;
 // const realData = realStatistics;
 const UserStore = useUserStore();
 const ExamineStore = useExamineStore();
-const examineData = computed(() => ExamineStore.examineState);
+const examineData = ref();
+const LeftCenTable = ref([]);
 const examineDetail = (data) => {
     if (UserStore.userInfo === 'administrator') {
         ExamineStore.adminDialog = true;
@@ -201,7 +208,23 @@ function searchExamine() {
     const formData = new FormData();
     formData.append('username', UserStore.userInfo);
     ExamineSearchAPI(formData).then((res) => {
-        ExamineStore.examineState = res.data.result;
+        if (res.data.result) {
+            ExamineStore.examineState = res.data.result;
+            examineData.value = ExamineStore.examineState;
+            ExamineStore.getApproved();
+        } else {
+            ExamineStore.examineState = [];
+            examineData.value = ExamineStore.examineState;
+            ExamineStore.clearApproved();
+        }
+    });
+    hospitalDataAPI().then((res) => {
+        homeLeftCenTable.forEach((key, index) => {
+            key.drkNum = res.data.result['待入库'][index];
+            key.yrkNum = res.data.result['已入库'][index];
+            key.cxNum = res.data.result['测序中'][index];
+            LeftCenTable.value.push(key);
+        });
     });
 }
 const ExamineDel = (index) => {
