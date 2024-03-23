@@ -1,18 +1,78 @@
 const sampleType = [
     {
-        label: '胆汁',
+        value: '全血',
+        label: '全血',
         icon: 'Folder',
     },
     {
-        label: '肾癌',
+        value: '血清',
+        label: '血清',
         icon: 'Folder',
     },
     {
-        label: '肥胖症',
+        value: '血浆',
+        label: '血浆',
         icon: 'Folder',
     },
     {
-        label: '尿沉渣',
+        value: '组织',
+        label: '组织',
+        icon: 'Folder',
+        children: [
+            {
+                label: '全血',
+                value: '全血',
+                icon: 'Folder',
+            },
+            {
+                value: '淋巴结',
+                label: '淋巴结',
+                icon: 'Folder',
+            },
+            {
+                value: '胆囊',
+                label: '胆囊',
+                icon: 'Folder',
+            },
+            {
+                value: '肝脏',
+                label: '肝脏',
+                icon: 'Folder',
+            },
+            {
+                value: '胃',
+                label: '胃',
+                icon: 'Folder',
+            },
+            {
+                value: '骨髓',
+                label: '骨髓',
+                icon: 'Folder',
+            },
+            {
+                value: '肠',
+                label: '肠',
+                icon: 'Folder',
+            },
+            {
+                value: '肿瘤',
+                label: '肿瘤',
+                icon: 'Folder',
+            },
+            {
+                value: '甲状腺',
+                label: '甲状腺',
+                icon: 'Folder',
+            },
+            {
+                value: '其他',
+                label: '其他',
+                icon: 'Folder',
+            },
+        ]
+    },
+    {
+        label: '脑脊液',
         icon: 'Folder',
     },
     {
@@ -21,47 +81,6 @@ const sampleType = [
     },
     {
         label: '粪便',
-        icon: 'Folder',
-    },
-    {
-        label: '癌组织',
-        icon: 'Folder',
-    },
-    {
-        label: '白细胞',
-        icon: 'Folder',
-    },
-    {
-        label: '肝癌',
-        icon: 'Folder',
-    },
-    {
-        label: '前列腺',
-        icon: 'Folder',
-    },
-    {
-        label: '腹部',
-        icon: 'Folder',
-    },
-    {
-        label: '淋巴癌',
-        icon: 'Folder',
-    },
-    {
-        label: '宫颈癌',
-        icon: 'Folder',
-    },
-
-    {
-        label: '直肠癌',
-        icon: 'Folder',
-    },
-    {
-        label: '鼻咽癌',
-        icon: 'Folder',
-    },
-    {
-        label: '血清',
         icon: 'Folder',
     },
 ];
@@ -102,7 +121,7 @@ const tableheaders = [
     },
     {
         prop: '样本创建时间',
-        label: '样本创建时间',
+        label: '样本源创建时间',
     },
 ];
 

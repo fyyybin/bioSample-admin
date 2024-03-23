@@ -24,7 +24,7 @@
                         <el-divider style="margin: 0"></el-divider>
                     </div>
                     <div class="tableValue">
-                        <el-table :data="LeftCenTable" style="width: 100%" border table-layout="fixed">
+                        <el-table v-loading="loading" :data="hospital" style="width: 100%" border table-layout="fixed">
                             <el-table-column prop="name" label="医院名称">
                                 <template #default="scope">
                                     <div style="display: flex; align-items: center">
@@ -35,9 +35,7 @@
                                     </div>
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="sampleTotal" label="样本资源总数（份）" />
-                            <el-table-column prop="itemTotal" label="项目总数（份）" />
-                            <el-table-column prop="resultTotal" label="成果总数（份）" />
+                            <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
                         </el-table>
                     </div>
                 </div>
@@ -157,19 +155,21 @@
 </template>
 
 <script setup lang="ts" name="home">
-import { homeLeftCenTable, autoMachine, realStatistics } from '@/assets/mockdata';
+import { autoMachine } from '@/assets/mockdata';
 // import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 import { useUserStore, useExamineStore } from '@/store';
-import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI } from '@/http/api';
-import { computed } from 'vue';
+import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI,collectionHospital } from '@/http/api';
+import { computed, onMounted, ref } from 'vue';
+import { tableheaders } from './variable';
 
-const LeftCenTable = homeLeftCenTable;
+const hospital = ref([])
+const loading = ref(true);
 const autoData = autoMachine;
 // const realData = realStatistics;
 const UserStore = useUserStore();
 const ExamineStore = useExamineStore();
 const examineData = computed(() => ExamineStore.examineState);
-const examineDetail = (data) => {
+const examineDetail = () => {
     if (UserStore.userInfo === 'administrator') {
         ExamineStore.adminDialog = true;
     } else {
@@ -214,6 +214,18 @@ const ExamineDel = (index) => {
         searchExamine();
     });
 };
+const getHospital = () => {
+    loading.value = true;
+    collectionHospital().then((response) => {
+        let result = response.data;
+        hospital.value = result.data;
+        loading.value = false;
+    });
+}
+
+onMounted(()=>{
+    getHospital()
+})
 </script>
 
 <style scoped lang="scss">

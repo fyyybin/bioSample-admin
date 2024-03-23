@@ -182,3 +182,10 @@ export function collectionAcc(item) {
         data: item,
     });
 }
+// 资源统计
+export function collectionHospital() {
+    return service({
+        url: '/collection/hospital/',
+        method: 'GET',
+    });
+}

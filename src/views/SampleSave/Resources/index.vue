@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <span style="color: red; font-size: small; margin-bottom: 5px">* 样本采集需签订知情同意书（样本源默认状态为否）</span>
-                <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; font-size: 12px" height="800">
+                <el-table :data="pageData.datalist" border v-loading="loading" element-loading-text="数据正在加载中..." :element-loading-svg="svg" style="width: 100%; font-size: 12px">
                     <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label" :width="item.width"></el-table-column>
                     <el-table-column label="知情同意" width="75px">
                         <template #default="scope">
@@ -68,9 +68,10 @@
                 </div>
                 <div class="input">
                     <span class="required" style="color: red">* </span>样本源类型：
-                    <el-select v-model="new_from" class="textbox">
-                        <el-option v-for="(item, index) in sampleType" :key="index" :label="item.label" :value="item.label"> </el-option>
-                    </el-select>
+                    <el-tree-select v-model="new_from" :data="sampleType" class="textbox" />
+                </div>
+                <div class="input" v-if="new_from=='其他'">
+                    <el-input class="textbox" v-model="from_et" style="margin-left: 23%;"></el-input>
                 </div>
                 <div class="input">
                     <span class="required" style="color: red">* </span>采集医院：
@@ -81,7 +82,7 @@
             </div>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button type="primary" @click="submitData(new_name, new_from, new_hospital)">确定</el-button>
+                    <el-button type="primary" @click="submitData(new_name, new_from, from_et, new_hospital)">确定</el-button>
                 </div>
             </template>
         </el-dialog>
@@ -146,6 +147,7 @@ const svg = `
 // 创建新样本
 const new_hospital = ref('');
 const new_from = ref('');
+const from_et = ref('')
 const new_name = ref('');
 const dialogVisible = ref(false);
 // 修改样本
@@ -154,14 +156,16 @@ const sex = ref('');
 const years = ref('');
 const date = ref('');
 // 创建样本源（未同意）
-const submitData = (new_name, new_from, new_hospital) => {
+const submitData = (new_name, new_from, from_et, new_hospital) => {
+    let value
     if (new_hospital == '' || new_name == '' || new_from == '') tips('warning', '表格不能为空！');
     else {
         const formData = new FormData();
         formData.append('样本源姓名', new_name);
         formData.append('样本源类型', new_from);
+        formData.append('其他', from_et);
         formData.append('采集医院', new_hospital);
-        sampleFromAdd(formData).then((response) => {
+        sampleFromAdd(formData).then(() => {
             // console.log(JSON.stringify(response.data));
             dialogVisible.value = false;
             tips('success', '样本源注册成功！');
@@ -178,7 +182,7 @@ const getData = (item) => {
             dialogVisible.value = false;
             loading.value = false;
         })
-        .catch((error) => {
+        .catch(() => {
             // console.log(error);
             loading.value = false;
         });
