@@ -107,7 +107,7 @@ const resetNodes2 = () => {
 };
 const getOldCell = (data) => {
     data.forEach((value, index) => {
-        if (value.样本类型 === '暂无') {
+        if (value.样本源类型 === '暂无') {
             ErrorMessage('请选择需要转移的样本！');
             return;
         }
@@ -120,7 +120,7 @@ const getOldCell = (data) => {
 };
 const getNewCell = (data) => {
     data.forEach((value, index) => {
-        if (value.样本类型 !== '暂无') {
+        if (value.样本源类型 !== '暂无') {
             ErrorMessage('请选择容器中空的位置！');
             return;
         }
@@ -129,7 +129,7 @@ const getNewCell = (data) => {
             AllNewCell.value.位置 = newList.value;
         }
     });
-    // if (data.样本类型 !== '暂无') {
+    // if (data.样本源类型 !== '暂无') {
     //     ErrorMessage('请选择容器中空的位置！');
     // } else {
     //     data['位置'] = newList.value + '/' + data.POS;
@@ -149,6 +149,7 @@ const SuccessMessage = (message) => {
 };
 const trans = () => {
     if (AllOldCell.value.样本信息.length === AllNewCell.value.样本信息.length) {
+        console.log(AllOldCell.value);
         const data = { oldData: JSON.stringify(AllOldCell.value), newData: JSON.stringify(AllNewCell.value) };
         CellTransAPI(data).then((res) => {
             SuccessMessage('转移审批进入审核阶段！');

@@ -33,7 +33,7 @@
                             <p style="padding: 0 2px">描述:</p>
                             <p style="padding: 0 2px">样本总数:{{ container.getCellsNum(props.msg) }}</p>
                             <p style="padding: 0 2px">样本空间占有率:{{ container.getCellsNumRate(props.msg, views[props.level - 1]) }}</p>
-                            <p style="padding: 0 2px">所存样本类型:全血,脑脊液</p>
+                            <p style="padding: 0 2px">所存样本源类型:全血,脑脊液</p>
                         </div>
                     </div>
                 </div>

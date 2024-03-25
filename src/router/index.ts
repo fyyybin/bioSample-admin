@@ -74,6 +74,7 @@ const routes = [
             layout: true,
         },
     },
+
     {
         path: '/test/',
         name: 'test',

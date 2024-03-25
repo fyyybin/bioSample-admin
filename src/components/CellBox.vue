@@ -13,7 +13,7 @@
             <div v-for="index of 81" :key="index" class="cell_item2" :style="mouseclick.indexOf(index) === -1 ? '' : 'background-color:#009688'" @click="boxDetail(index)">
                 <el-popover placement="bottom" :width="200" trigger="hover" :show-arrow="false">
                     <template #reference>
-                        <img :src="images[searchCellBox(props.msg, index).样本类型]" />
+                        <img :src="images[searchCellBox(props.msg, index).样本源类型]" width="50" />
                     </template>
                     <p>
                         <span>
@@ -23,7 +23,7 @@
                             <p>样本源姓名:{{ searchCellBox(props.msg, index).样本源姓名 }}</p>
                         </span>
                         <span>
-                            <p>样本类型名称:{{ searchCellBox(props.msg, index).样本类型 }}</p>
+                            <p>样本源类型名称:{{ searchCellBox(props.msg, index).样本源类型 }}</p>
                         </span>
                     </p>
                 </el-popover>
@@ -32,12 +32,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import Cell from '@/assets/images/container/cell.png';
 import Blood from '@/assets/images/container/blood.png';
-import Danzhi from '@/assets/images/container/danzhi.png';
-import DNA from '@/assets/images/container/dna.png';
-import RNA from '@/assets/images/container/rna.png';
-import FMW from '@/assets/images/container/fenmiwu.png';
+import XQ from '@/assets/images/container/血清.png';
+import XJ from '@/assets/images/container/外部血浆.png';
+import ZuZhi from '@/assets/images/container/zuzhi.png';
+import NJY from '@/assets/images/container/naojiye.png';
+import FB from '@/assets/images/container/fenbian.png';
+import NY from '@/assets/images/container/niaoye.png';
 import { ref } from 'vue';
 const props = defineProps({
     msg: Array,
@@ -46,24 +47,29 @@ const mouseclick = ref([]);
 const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const num2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const images = {
-    细胞: Cell,
     全血: Blood,
-    胆汁: Danzhi,
-    DNA: DNA,
-    RNA: RNA,
-    分泌物: FMW,
+    血清: XQ,
+    血浆: XJ,
+    组织: ZuZhi,
+    脑脊液: NJY,
+    尿液: NY,
+    粪便: FB,
     暂无: '',
 };
 const CellBox = (data, indexs) => {
     const result = [];
     for (const num of indexs) {
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].POS === num) {
-                result.push(data[i]);
-                break;
-            }
-            if (i === data.length - 1) {
-                result.push({ 样本类型: '暂无', POS: num });
+        if (data.length === 0) {
+            result.push({ 样本源类型: '暂无', POS: num });
+        } else {
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].POS === num) {
+                    result.push(data[i]);
+                    break;
+                }
+                if (i === data.length - 1) {
+                    result.push({ 样本源类型: '暂无', POS: num });
+                }
             }
         }
     }
@@ -75,7 +81,7 @@ const searchCellBox = (data, index) => {
             return item;
         }
     }
-    return { 样本类型: '暂无', POS: index };
+    return { 样本源类型: '暂无', POS: index };
 };
 //定义要发送的事件名称，如 aList
 const emit = defineEmits(['cellDetail']);

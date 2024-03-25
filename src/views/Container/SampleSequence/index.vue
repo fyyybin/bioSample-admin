@@ -12,10 +12,17 @@
             <el-table-column v-for="(item, index) in headers" :key="index" :prop="item.prop" :label="item.label" :width="item.width"> </el-table-column>
             <el-table-column label="测序状态">
                 <template #default="scope">
-                    <el-tag v-if="scope.row.测序状态 == '已送样'" type="danger">{{ scope.row['测序状态'] }}</el-tag>
-                    <el-tag v-if="scope.row.测序状态 == '测序中'" type="warning">{{ scope.row['测序状态'] }}</el-tag>
+                    <el-tag v-if="scope.row.测序状态 == '已送样'" type="danger" @click="infos = openInfo(scope, 'dialog')">{{ scope.row['测序状态'] }}</el-tag>
+                    <el-tag
+                        v-if="scope.row.测序状态 == '测序中'"
+                        type="warning"
+                        @click="
+                            noticeDialog = true;
+                            selectSample = scope.row['样本编号'];
+                        "
+                        >{{ scope.row['测序状态'] }}</el-tag
+                    >
                     <el-tag v-if="scope.row.测序状态 == '已完成'" type="success">{{ scope.row['测序状态'] }}</el-tag>
-                    <el-button v-if="scope.row.测序状态 == '-'" plain class="btn"  @click="infos = openInfo(scope, 'dialog')">样本测序</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -33,34 +40,43 @@
         >
             <template #default>
                 <span>
-                    共 {{ sequenceDatas.length }} 条记录&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前显示第 {{ pageSize * currentPage > sequenceDatas.length ? sequenceDatas.length : pageSize * currentPage }} 条记录
-                    &nbsp;&nbsp;</span
+                    共 {{ sequenceDatas.length }} 条记录&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前显示第
+                    {{ pageSize * currentPage > sequenceDatas.length ? sequenceDatas.length : pageSize * currentPage }} 条记录 &nbsp;&nbsp;</span
                 >
             </template>
         </el-pagination>
 
         <!--测序按钮对话框-->
-        <el-dialog v-model="sequenceDialog" width="500" :close-on-click-modal="false" @close="clearData" style="font-size: 18px">
+        <el-dialog v-model="sequenceDialog" width="500">
             <template #header>
                 测序信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本编号'] }}</el-tag>
             </template>
-            <div class="info">
-                <span class="sample-key">测序公司</span>
-                <el-input class="sample-value" v-model="firm" placeholder="请输入公司名称" clearable></el-input>
-            </div>
-            <div class="info">
-                <span class="sample-key">测序平台</span>
-                <el-input class="sample-value" v-model="platform" placeholder="请输入平台名称" clearable></el-input>
-            </div>
-            <div class="info">
-                    <span class="sample-key">测序数据</span>
-                    <el-select v-model="datastatus" class="sample-value" placeholder="是否有测序数据">
+            <el-form :model="cellSeq" label-width="auto" style="max-width: 600px">
+                <el-form-item style="padding: 0 2px" label="测序公司">
+                    <el-input v-model="cellSeq.测序公司" />
+                </el-form-item>
+                <el-form-item label="测序平台">
+                    <el-input v-model="cellSeq.测序平台" />
+                </el-form-item>
+                <el-form-item label="测序数据">
+                    <el-select v-model="cellSeq.测序数据" placeholder="是否有测序数据">
                         <el-option v-for="(item, index) in pred" :key="index" :label="item" :value="item"></el-option>
                     </el-select>
-                </div>
+                </el-form-item>
+            </el-form>
             <template #footer>
                 <div class="dialog-footer">
-                    <el-button type="primary" @click="">发布</el-button>
+                    <el-button @click="sequenceDialog = false">取消</el-button>
+                    <el-button type="primary" @click="putData()"> 确认 </el-button>
+                </div>
+            </template>
+        </el-dialog>
+        <el-dialog v-model="noticeDialog" width="300" title="提示">
+            <span>该样本确定完成测序吗</span>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button @click="noticeDialog = false">取消</el-button>
+                    <el-button type="primary" @click="change()">确定</el-button>
                 </div>
             </template>
         </el-dialog>
@@ -69,34 +85,40 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue';
-import { sequenceList } from '@/http/api';
-import { headers, pred } from './variable'
+import { sequenceList, putSeqAPI, changeSeqAPI } from '@/http/api';
+import { headers, pred } from './variable';
+import { useUserStore } from '@/store';
+import { ElMessage } from 'element-plus';
 
-const sequenceDatas = ref([])
-const loading = ref(false)
-const sequenceDialog = ref(false)
-
-const firm = ref('')
-const platform = ref('')
-const datastatus = ref('')
-
+const sequenceDatas = ref([]);
+const loading = ref(false);
+const sequenceDialog = ref(false);
+const noticeDialog = ref(false);
+const UserStore = useUserStore();
+const selectSample = ref('');
+const cellSeq = reactive({
+    测序公司: '',
+    测序平台: '',
+    测序数据: '',
+});
 // 所有采集需求
 const getData = () => {
-    sequenceList().then((response) => {
-        let result = response.data;
-        sequenceDatas.value = result.data;
+    const formData = new FormData();
+    formData.append('username', UserStore.userInfo);
+    sequenceList(formData).then((response) => {
+        sequenceDatas.value = response.data.result;
         loading.value = false;
     });
 };
 
-onMounted(()=>{
-    getData()
-})
+onMounted(() => {
+    getData();
+});
 
 const infos = ref();
 const openInfo = (item, type) => {
-    if(type=='dialog')
-        sequenceDialog.value = true
+    selectSample.value = item.row.样本编号;
+    if (type == 'dialog') sequenceDialog.value = true;
     return item.row;
 };
 const background = ref(false);
@@ -114,7 +136,6 @@ const svg = `
 const currentPage = ref(1);
 const pageSize = ref(10);
 const handleSizeChange = (val: number) => {
-    // console.log(`${val} items per page`);
     pageSize.value = val;
 };
 const handleCurrentChange = (val: number) => {
@@ -125,11 +146,35 @@ const pageData = reactive({
         return sequenceDatas.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize.value);
     }),
 });
-// 关闭对话框后清空
-const clearData = () => {
-    firm.value = '';
-    platform.value = '';
-    datastatus.value = '';
+const SuccessMessage = (message) => {
+    ElMessage({
+        message: message,
+        type: 'success',
+    });
+};
+const putData = () => {
+    const formData = new FormData();
+    formData.append('测序公司', cellSeq.测序公司);
+    formData.append('测序平台', cellSeq.测序平台);
+    formData.append('测序数据', cellSeq.测序数据);
+    formData.append('样本编号', selectSample.value);
+    formData.append('username', UserStore.userInfo);
+
+    putSeqAPI(formData).then((res) => {
+        SuccessMessage('已进入测序中');
+        sequenceDialog.value = false;
+        getData();
+    });
+};
+const change = () => {
+    const formData = new FormData();
+    formData.append('样本编号', selectSample.value);
+    formData.append('username', UserStore.userInfo);
+    changeSeqAPI(formData).then((res) => {
+        SuccessMessage('测序状态修改完成');
+        noticeDialog.value = false;
+        getData();
+    });
 };
 </script>
 

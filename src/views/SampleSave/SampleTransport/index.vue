@@ -68,7 +68,7 @@
         </el-pagination>
 
         <!--采集按钮对话框-->
-        <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" @close="clearData"  style="font-size: 18px">
+        <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" @close="clearData" style="font-size: 18px">
             <template #header>
                 采集信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
@@ -79,10 +79,6 @@
             <div class="info">
                 <span class="sample-key">采集医院</span>
                 <span class="sample-value">{{ infos['采集医院'] }}</span>
-            </div>
-            <div class="info">
-                <span class="sample-key">研究用途</span>
-                <span class="sample-value">{{ infos['研究用途'] }}</span>
             </div>
             <div class="info">
                 <span class="sample-key">预处理</span>
@@ -185,7 +181,7 @@ const hospital = ref('');
 // 详细数据
 const showDetail = () => {
     const sample = infos.value;
-    (id.value = sample['样本源编号']), (content.value = sample['样本类型']), (hospital.value = sample['采集医院']);
+    (id.value = sample['样本源编号']), (content.value = sample['样本源类型']), (hospital.value = sample['采集医院']);
     info_dialog.value = true;
 };
 

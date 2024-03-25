@@ -51,7 +51,6 @@ const getData = () => {
     samplefromQuery(props.params).then((response) => {
         let result = response.data;
         details.value = result.data;
-        // console.log(details);
         loading.value = false;
     });
 };
@@ -61,7 +60,6 @@ const sampleData = () => {
     collectionSample(props.params).then((response) => {
         let result = response.data;
         sampleList.value = result.data;
-        // console.log(sampleList);
         loading.value = false;
     });
 };

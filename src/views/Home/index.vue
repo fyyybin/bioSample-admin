@@ -24,7 +24,7 @@
                         <el-divider style="margin: 0"></el-divider>
                     </div>
                     <div class="tableValue">
-                        <el-table v-loading="loading" :data="hospital" style="width: 100%" border table-layout="fixed">
+                        <el-table :data="LeftCenTable" style="width: 100%" border table-layout="fixed">
                             <el-table-column prop="name" label="医院名称">
                                 <template #default="scope">
                                     <div style="display: flex; align-items: center">
@@ -35,13 +35,9 @@
                                     </div>
                                 </template>
                             </el-table-column>
-                            <<<<<<< HEAD
                             <el-table-column prop="drkNum" label="待入库数量" />
                             <el-table-column prop="yrkNum" label="已入库数量" />
                             <el-table-column prop="cxNum" label="测序样本数量" />
-                            =======
-                            <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
-                            >>>>>>> origin/new-325
                         </el-table>
                     </div>
                 </div>
@@ -108,7 +104,7 @@
                         <el-divider style="margin: 0"></el-divider>
                     </div>
                     <el-scrollbar style="height: 90%">
-                        <div class="message-list" v-if="(examineData = [])">
+                        <div class="message-list" v-if="!visSP">
                             <el-row class="row-bg" justify="space-between" style="padding-top: 10px">
                                 <el-col :span="6"><div class="grid-content ep-bg-purple">--------</div></el-col>
                                 <el-col :span="6"><div class="grid-content ep-bg-purple-light">暂无审批</div></el-col>
@@ -118,14 +114,14 @@
                         <div class="message-list" v-else>
                             <div class="message-item" v-for="(item, index) in examineData" :key="index">
                                 <div class="message-content" v-if="item.用户信息 !== 'administrator'">
-                                    <span class="message-title">{{ item.样本源编号 }}</span>
+                                    <span class="message-title">{{ item.样本编号 }}</span>
                                     <span class="message-title">申请&nbsp;&nbsp;{{ item.操作 }}</span>
-                                    <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp;样本状态:{{ item.入库状态 }}</span>
+                                    <span class="message-date">样本源类型:{{ item.样本源类型 }} &nbsp;样本状态:{{ item.入库状态 }}</span>
                                 </div>
                                 <div class="message-content" v-if="item.用户信息 === 'administrator'">
                                     <span class="message-title">{{ item.用户信息 }}</span>
                                     <span class="message-title">申请&nbsp;&nbsp;{{ item.操作 }}</span>
-                                    <span class="message-date">样本类型:{{ item.样本类型 }} &nbsp; 样本状态:{{ item.入库状态 }}</span>
+                                    <span class="message-date">样本源类型:{{ item.样本源类型 }} &nbsp; 样本状态:{{ item.入库状态 }}</span>
                                 </div>
                                 <el-icon @click="examineDetail(item)" style="width: 30px"><InfoFilled :color="colorType(item.入库状态)" /></el-icon>
                             </div>
@@ -136,10 +132,9 @@
         </div>
         <el-dialog v-model="ExamineStore.userDialog" title="审核详情" width="800">
             <el-table :data="examineData" border max-height="400">
-                <el-table-column prop="样本源编号" width="240" label="样本源编号" />
+                <el-table-column prop="样本编号" width="240" label="样本编号" />
                 <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
                 <el-table-column prop="样本源类型" width="100" label="样本源类型" />
-                <el-table-column prop="样本类型" width="100" label="样本类型" />
                 <el-table-column prop="样本量" width="100" label="样本量" />
                 <el-table-column prop="采集医院" width="210" label="所属样本组" />
                 <el-table-column fixed="right" prop="入库状态" width="100" label="样本状态" />
@@ -148,10 +143,9 @@
         <el-dialog v-model="ExamineStore.adminDialog" title="审核详情" width="1000">
             <el-table :data="examineData" border style="width: 100%; height: 400px">
                 <el-table-column fixed="left" prop="入库状态" width="100" label="样本状态" />
-                <el-table-column prop="样本源编号" width="240" label="样本源编号" />
+                <el-table-column prop="样本编号" width="240" label="样本编号" />
                 <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
                 <el-table-column prop="样本源类型" width="100" label="样本源类型" />
-                <el-table-column prop="样本类型" width="100" label="样本类型" />
                 <el-table-column prop="样本量" width="100" label="样本量" />
                 <el-table-column prop="采集医院" width="210" label="所属样本组" />
                 <el-table-column prop="操作" width="100" label="操作" />
@@ -178,8 +172,10 @@ const autoData = autoMachine;
 // const realData = realStatistics;
 const UserStore = useUserStore();
 const ExamineStore = useExamineStore();
-const examineData = ref();
+const examineData = ref([]);
 const LeftCenTable = ref([]);
+const visSP = ref(false);
+
 const examineDetail = (data) => {
     if (UserStore.userInfo === 'administrator') {
         ExamineStore.adminDialog = true;
@@ -200,9 +196,10 @@ searchExamine();
 function PorR(index, o) {
     const formData = new FormData();
     const data = ExamineStore.examineState[index];
-    formData.append('样本源编号', data.样本源编号);
+    formData.append('样本编号', data.样本编号);
     formData.append('操作', data.操作);
     formData.append('用户信息', data.用户信息);
+    formData.append('审批时间', data.审批时间);
     formData.append('样本状态', o ? '通过' : '审核拒绝');
     ExamineAPI(formData).then((response) => {
         searchExamine();
@@ -215,14 +212,17 @@ function searchExamine() {
         if (res.data.result) {
             ExamineStore.examineState = res.data.result;
             examineData.value = ExamineStore.examineState;
+            visSP.value = true;
             ExamineStore.getApproved();
         } else {
             ExamineStore.examineState = [];
             examineData.value = ExamineStore.examineState;
+            visSP.value = false;
             ExamineStore.clearApproved();
         }
     });
     hospitalDataAPI().then((res) => {
+        LeftCenTable.value = [];
         homeLeftCenTable.forEach((key, index) => {
             key.drkNum = res.data.result['待入库'][index];
             key.yrkNum = res.data.result['已入库'][index];
@@ -234,25 +234,13 @@ function searchExamine() {
 const ExamineDel = (index) => {
     const formData = new FormData();
     const data = ExamineStore.examineState[index];
-    formData.append('样本源编号', data.样本源编号);
+    formData.append('样本编号', data.样本编号);
     formData.append('操作', data.操作);
     formData.append('用户信息', data.用户信息);
     ExamineDelAPI(formData).then(() => {
         searchExamine();
     });
 };
-const getHospital = () => {
-    loading.value = true;
-    collectionHospital().then((response) => {
-        let result = response.data;
-        hospital.value = result.data;
-        loading.value = false;
-    });
-};
-
-onMounted(() => {
-    getHospital();
-});
 </script>
 
 <style scoped lang="scss">

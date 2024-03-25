@@ -15,40 +15,30 @@ const headers = [
         width: 100,
     },
     {
-        prop: '样本源姓名',
-        label: '样本源姓名',
+        prop: '样本组学检测',
+        label: '样本组学检测',
         width: 100,
     },
     {
-        prop: '研究用途',
-        label: '研究用途',
-        width: 220
-    },
-    {
-        prop: '入库时间',
-        label: '入库时间',
-        width: 100
-    },
-    {
-        prop: '是否测序',
-        label: '是否测序',
-        width: 80
+        prop: '申请人姓名',
+        label: '申请人姓名',
+        width: 100,
     },
     {
         prop: '测序公司',
         label: '测序公司',
-        width: 150
+        width: 150,
     },
     {
         prop: '测序平台',
         label: '测序平台',
-        width: 150
+        width: 150,
     },
     {
         prop: '测序数据',
         label: '测序数据',
-        width: 80
+        width: 80,
     },
 ];
-const pred = [ '是','否' ]
-export { headers, pred }
+const pred = ['是', '否'];
+export { headers, pred };

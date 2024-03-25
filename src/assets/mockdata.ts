@@ -136,6 +136,19 @@ const MenuList = [
                     isKeepAlive: true,
                 },
             },
+            {
+                path: '/container/sequence',
+                name: 'ContainerSequence',
+                meta: {
+                    icon: 'Memo',
+                    title: '样本测序',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
         ],
     },
     {

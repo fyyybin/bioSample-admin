@@ -196,9 +196,26 @@ export function collectionHospital() {
     });
 }
 // 样本测序
-export function sequenceList() {
+export function sequenceList(data) {
     return service({
         url: '/analyze/',
-        method: 'GET',
+        method: 'POST',
+        data,
+    });
+}
+// 样本测序状态变更
+export function putSeqAPI(data) {
+    return service({
+        url: '/analyze/change/',
+        method: 'POST',
+        data,
+    });
+}
+// 样本测序状态变更
+export function changeSeqAPI(data) {
+    return service({
+        url: '/analyze/finish/',
+        method: 'POST',
+        data,
     });
 }

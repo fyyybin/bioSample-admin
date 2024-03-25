@@ -22,9 +22,9 @@
                     </ul>
                     <div class="infor_text">
                         <div style="width: 100%; font-size: 12px">
-                            <p style="padding: 0 2px">样本源编号:{{ displayCell.样本源编号 }}</p>
+                            <p style="padding: 0 2px">样本编号:{{ displayCell.样本编号 }}</p>
                             <p style="padding: 0 2px">样本源姓名:{{ displayCell.样本源姓名 }}</p>
-                            <p style="padding: 0 2px">样本类型:{{ displayCell.样本类型 }}</p>
+                            <p style="padding: 0 2px">样本源类型:{{ displayCell.样本源类型 }}</p>
                             <p style="padding: 0 2px">所属样本组:{{ displayCell.采集医院 }}</p>
                             <p style="padding: 0 2px">样本量:{{ displayCell.样本量 }}</p>
                             <p style="padding: 0 2px">样本状态:{{ displayCell.入库状态 }}</p>
@@ -38,10 +38,9 @@
     <el-dialog v-model="dialogVisibleAdd" title="样本入库" width="1000">
         <el-table :data="addCellList" border style="width: 100%; height: 400px" @selection-change="handleSelectionChange">
             <el-table-column fixed="left" type="selection" width="55" />
-            <el-table-column prop="样本源编号" width="240" label="样本源编号" />
+            <el-table-column prop="样本编号" width="240" label="样本编号" />
             <el-table-column prop="样本源姓名" width="100" label="样本源姓名" />
             <el-table-column prop="样本源类型" width="100" label="样本源类型" />
-            <el-table-column prop="样本类型" width="100" label="样本类型" />
             <el-table-column prop="样本量" width="100" label="样本量" />
 
             <el-table-column prop="采集医院" width="210" label="所属样本组" />
@@ -64,8 +63,8 @@
         <el-row>
             <el-col :span="12" style="font-size: 14px">
                 <el-form v-for="(item, index) of AllDisplayCell" :key="index" label-width="auto" style="max-width: 600px">
-                    <el-form-item label="样本源编号"> {{ item.样本源编号 }} </el-form-item>
-                    <el-form-item label="样本类型"> {{ item.样本类型 }} </el-form-item>
+                    <el-form-item label="样本编号"> {{ item.样本编号 }} </el-form-item>
+                    <el-form-item label="样本源类型"> {{ item.样本源类型 }} </el-form-item>
                     <!-- <el-form-item label="样本量"> {{ item.样本量 }} </el-form-item> -->
                     <!-- <el-form-item label="位置"> {{ item.位置 }} </el-form-item> -->
                 </el-form>
@@ -80,7 +79,7 @@
                         <el-input v-model="formDataOut.申请人联系方式" />
                     </el-form-item>
                     <el-form-item label="出库时间">
-                        <el-date-picker v-model="formDataOut.出库时间" type="date" placeholder="选择日期" style="width: 100%" />
+                        <el-date-picker v-model="formDataOut.出库时间" type="date" style="width: 100%" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
                     </el-form-item>
                     <el-form-item label="研究用途">
                         <el-select v-model="formDataOut.研究用途" placeholder="选择具体研究用途">
@@ -122,7 +121,7 @@
                 <el-input v-model="formDataDel.申请人联系方式" />
             </el-form-item>
             <el-form-item label="废弃时间">
-                <el-date-picker v-model="formDataDel.废弃时间" type="date" placeholder="选择日期" style="width: 100%" />
+                <el-date-picker v-model="formDataDel.废弃时间" type="date" style="width: 100%" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
             </el-form-item>
             <el-form-item label="废弃原因">
                 <el-input v-model="formDataDel.废弃原因" type="textarea" />
@@ -150,7 +149,6 @@ const props = defineProps({
     name: String,
     level: Number,
 });
-// console.log(props.msg);
 
 const addCellList = ref([]);
 const dialogVisibleOut = ref(false);
@@ -172,12 +170,14 @@ const formDataDel = reactive({
 });
 const displayCell = ref([]);
 const AllDisplayCell = ref([]);
-
+const disabledFn = (val: any) => {
+    return val.getTime() <= new Date().getTime() - 8.64e7;
+};
 interface FormData {
     位置: number;
-    样本源编号: string;
+    样本编号: string;
     样本源姓名: string;
-    样本类型: string;
+    样本源类型: string;
     所属样本组: string;
     样本量: string;
     入库时间: string;
@@ -189,9 +189,8 @@ const handleSelectionChange = (val: FormData[]) => {
 
 const getCell = (data) => {
     AllDisplayCell.value = data;
-
     if (data.length === 1) {
-        if (data[0].样本类型 !== '暂无') {
+        if (data[0].样本源类型 !== '暂无') {
             displayCell.value = data[0];
             container.displayItem = true;
         } else {
@@ -225,6 +224,7 @@ const dialogAdd = () => {
         } else {
             CellAddAPI().then((res) => {
                 addCellList.value = res.data.result;
+                console.log(addCellList.value);
             });
             dialogVisibleAdd.value = true;
         }
@@ -232,16 +232,20 @@ const dialogAdd = () => {
 };
 const Add = () => {
     var Error = false;
+    if (AllDisplayCell.value.length !== multipleSelection.value.length) {
+        ErrorMessage('所选空位与所选细胞数量不符！');
+        Error = true;
+    }
     for (const item of multipleSelection.value) {
         if (item.入库状态 === '审核中') {
-            ErrorMessage('编号:' + item.样本源编号 + '该样本已在入库审核！');
+            ErrorMessage('编号:' + item.样本编号 + '该样本已在入库审核！');
             Error = true;
         }
     }
     if (!Error) {
         const formData = new FormData();
         multipleSelection.value.forEach((value, index) => {
-            formData.append(value.样本源编号, container.breadcrumbCell + '/' + AllDisplayCell.value[index].POS);
+            formData.append(value.样本编号, container.breadcrumbCell + '/' + AllDisplayCell.value[index].POS);
         });
         formData.append('name', userStore.userInfo);
         CellStorageAPI(formData).then((res) => {
@@ -277,7 +281,7 @@ const Out = () => {
             formData.append(key, formDataOut[key]);
         });
         AllDisplayCell.value.forEach((value) => {
-            formData.append(value.样本源编号, container.breadcrumbCell + '/' + value.POS);
+            formData.append(value.样本编号, container.breadcrumbCell + '/' + value.POS);
         });
         formData.append('name', userStore.userInfo);
 
@@ -311,7 +315,7 @@ const Del = () => {
             formData.append(key, formDataDel[key]);
         });
         AllDisplayCell.value.forEach((value) => {
-            formData.append(value.样本源编号, container.breadcrumbCell + '/' + value.POS);
+            formData.append(value.样本编号, container.breadcrumbCell + '/' + value.POS);
         });
         formData.append('name', userStore.userInfo);
         CellDelAPI(formData).then((res) => {
