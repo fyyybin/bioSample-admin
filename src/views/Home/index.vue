@@ -24,7 +24,7 @@
                         <el-divider style="margin: 0"></el-divider>
                     </div>
                     <div class="tableValue">
-                        <el-table :data="LeftCenTable" style="width: 100%" border table-layout="fixed">
+                        <el-table v-loading="loading" :data="hospital" style="width: 100%" border table-layout="fixed">
                             <el-table-column prop="name" label="医院名称">
                                 <template #default="scope">
                                     <div style="display: flex; align-items: center">
@@ -35,9 +35,13 @@
                                     </div>
                                 </template>
                             </el-table-column>
+                            <<<<<<< HEAD
                             <el-table-column prop="drkNum" label="待入库数量" />
                             <el-table-column prop="yrkNum" label="已入库数量" />
                             <el-table-column prop="cxNum" label="测序样本数量" />
+                            =======
+                            <el-table-column v-for="(item, index) in tableheaders" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
+                            >>>>>>> origin/new-325
                         </el-table>
                     </div>
                 </div>
@@ -237,6 +241,18 @@ const ExamineDel = (index) => {
         searchExamine();
     });
 };
+const getHospital = () => {
+    loading.value = true;
+    collectionHospital().then((response) => {
+        let result = response.data;
+        hospital.value = result.data;
+        loading.value = false;
+    });
+};
+
+onMounted(() => {
+    getHospital();
+});
 </script>
 
 <style scoped lang="scss">

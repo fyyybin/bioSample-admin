@@ -59,17 +59,30 @@
                 </template>
                 <div class="info">
                     <span class="sample-key">创建时间</span>
-                    <el-date-picker v-model="sample_date" type="date" style="width: 250px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
+                    <el-date-picker v-model="sample_date" type="date" style="width: 300px" value-format="YYYYMMDD" placeholder="请选择日期" :disabled-date="disabledFn" />
                 </div>
                 <div class="info">
-                    <span class="sample-key">样本类型</span>
-                    <el-select v-model="sample_content" class="sample-value" placeholder="请选择类型">
-                        <el-option v-for="(item, index) in content" :key="index" :label="item" :value="item"></el-option>
-                    </el-select>
+                    <span class="sample-key">研究用途</span>
+                    <el-tree-select v-model="sample_use" :data="sampleUse" class="sample-value" placeholder="请选择样本用途"/>
+                </div>
+                <div class="info" v-if="sample_use=='其他'">
+                    <el-input class="sample-value" v-model="use_et" style="margin-left: 25%;" placeholder="请输入其他用途"></el-input>
                 </div>
                 <div class="info">
                     <span class="sample-key">样本量(ul)</span>
-                    <el-input class="sample-value" v-model="sample_valume" placeholder="请输入样本量"></el-input>
+                    <div  class="sample-value" style="display: flex;">
+                        <el-input class="sample-value" v-model="sample_valume1" placeholder="样本量" style="width: 300px;"></el-input>
+
+                        <el-select v-model="sample_unit1" style="margin-left: 10px;" class="sample-value" placeholder="单位">
+                            <el-option v-for="(item, index) in sampleUnit1" :key="index" :label="item" :value="item"></el-option>
+                        </el-select>
+
+                        <el-input class="sample-value"  v-model="sample_valume2" placeholder="样本量" style="width: 300px; margin-left: 10px;"></el-input>
+                        
+                        <el-select v-model="sample_unit2" style="margin-left: 10px;" class="sample-value" placeholder="单位">
+                            <el-option v-for="(item, index) in sampleUnit2" :key="index" :label="item" :value="item"></el-option>
+                        </el-select>
+                    </div>
                 </div>
                 <div class="info">
                     <span class="sample-key">预处理</span>
@@ -79,7 +92,8 @@
                 </div>
                 <template #footer>
                     <div class="dialog-footer">
-                        <el-button type="primary" @click="submitData(sample_date, sample_valume, sample_content, sample_pred)"> 确定 </el-button>
+                        <el-button type="primary"
+                            @click="submitData(sample_date,sample_use,use_et,sample_valume1,sample_unit1,sample_valume2,sample_unit2, sample_pred)"> 确定 </el-button>
                     </div>
                 </template>
             </el-dialog>
@@ -94,15 +108,19 @@
 <script setup lang="ts">
 import { onMounted, computed, reactive, ref } from 'vue';
 import { CirclePlus, Switch } from '@element-plus/icons-vue';
-import { tableheaders, content, pred } from '../variable';
+import { tableheaders, pred, sampleUse,sampleUnit1,sampleUnit2 } from '../variable';
 import { ElMessage } from 'element-plus';
 import fromInfo from './fromInfo.vue';
 import { sampleFromAgreeSearch, collectionAdd } from '@/http/api';
 // 表单信息
 const sample_date = ref('');
-const sample_valume = ref('');
-const sample_content = ref('');
+const sample_valume1 = ref('');
+const sample_valume2 = ref('');
+const sample_unit1 = ref('')
+const sample_unit2 = ref('')
 const sample_pred = ref('');
+const sample_use = ref('')
+const use_et = ref('')
 
 const loading = ref(true);
 const fromList = ref([]);
@@ -141,13 +159,17 @@ const showDetail = () => {
     id.value = sample['样本源编号'];
     infoDialog.value = true;
 };
-const submitData = (date, valume, content, pred) => {
-    if (date == '' || valume == '' || content == '' || pred == '') {
+const submitData = (date,use,et,valume1,unit1,valume2,unit2,pred) => {
+    if (date == '' || use == '' || valume1=='' || unit1=='' || valume2=='' || unit2=='' || pred == '') {
         tips(1);
     } else {
         infos.value['采集时间'] = date;
-        infos.value['样本类型'] = content;
-        infos.value['样本量'] = valume;
+        infos.value['研究用途'] = use;
+        infos.value['其他'] = et;
+        infos.value['体积'] = valume1;
+        infos.value['体积单位'] = unit1;
+        infos.value['数量'] = valume2;
+        infos.value['数量单位'] = unit2;
         infos.value['预处理'] = pred;
 
         const formData = new FormData();
@@ -190,8 +212,12 @@ onMounted(() => {
 });
 const clearData = () => {
     sample_date.value = '';
-    sample_content.value = '';
-    sample_valume.value = '';
+    sample_use.value = '';
+    use_et.value = '';
+    sample_valume1.value = '';
+    sample_valume2.value = '';
+    sample_unit1.value = '';
+    sample_unit2.value = '';
     sample_pred.value = '';
 };
 const tips = (item) => {
@@ -248,7 +274,7 @@ const tips = (item) => {
         display: flex;
     }
     .sample-value {
-        width: 250px;
+        width: 300px;
         height: 30px;
         font-size: 13px;
     }

@@ -152,6 +152,20 @@ const MenuList = [
             isKeepAlive: true,
         },
     },
+    {
+        path: '/test/',
+        name: 'test',
+        component: '/upload',
+        meta: {
+            icon: 'InfoFilled',
+            title: '测试',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+    },
 ];
 const autoMachine = [
     {

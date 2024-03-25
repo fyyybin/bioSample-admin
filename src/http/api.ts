@@ -188,3 +188,17 @@ export function hospitalDataAPI() {
         method: 'POST',
     });
 }
+// 资源统计
+export function collectionHospital() {
+    return service({
+        url: '/collection/hospital/',
+        method: 'GET',
+    });
+}
+// 样本测序
+export function sequenceList() {
+    return service({
+        url: '/analyze/',
+        method: 'GET',
+    });
+}
