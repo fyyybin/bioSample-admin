@@ -39,6 +39,15 @@ const routes = [
         },
     },
     {
+        path: '/container/sequence',
+        name: 'ContainerSequence',
+        component: () => import('../views/Container/SampleSequence/index.vue'),
+        meta: {
+            title: '样本测序',
+            layout: true,
+        },
+    },
+    {
         path: '/samplesave/resources',
         name: 'Resources',
         component: () => import('../views/SampleSave/Resources/index.vue'),
@@ -62,6 +71,15 @@ const routes = [
         component: () => import('../views/SampleSave/SampleTransport/index.vue'),
         meta: {
             title: '样本操作',
+            layout: true,
+        },
+    },
+    {
+        path: '/test/',
+        name: 'test',
+        component: () => import('../views/upload.vue'),
+        meta: {
+            title: '测试',
             layout: true,
         },
     },

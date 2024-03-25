@@ -26,7 +26,7 @@
                         <el-table-column label="采集状态" width="98px">
                             <template #default="scope">
                                 <el-tag v-if="scope.row.采集状态=='已完成'" type="success">{{ scope.row['采集状态'] }}</el-tag>
-                                <el-tag v-if="scope.row.采集状态=='未知'" type="success">{{ scope.row['采集状态'] }}</el-tag>
+                                <el-tag v-if="scope.row.采集状态=='未知'" type="warning">{{ scope.row['采集状态'] }}</el-tag>
                             </template>
                         </el-table-column>
                     </el-table>

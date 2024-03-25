@@ -189,3 +189,10 @@ export function collectionHospital() {
         method: 'GET',
     });
 }
+// 样本测序
+export function sequenceList() {
+    return service({
+        url: '/analyse/',
+        method: 'GET',
+    });
+}

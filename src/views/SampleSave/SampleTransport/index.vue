@@ -68,7 +68,7 @@
         </el-pagination>
 
         <!--采集按钮对话框-->
-        <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
+        <el-dialog v-model="col_dialog" width="500" :close-on-click-modal="false" @close="clearData"  style="font-size: 18px">
             <template #header>
                 采集信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
@@ -81,8 +81,8 @@
                 <span class="sample-value">{{ infos['采集医院'] }}</span>
             </div>
             <div class="info">
-                <span class="sample-key">样本类型</span>
-                <span class="sample-value">{{ infos['样本类型'] }}</span>
+                <span class="sample-key">研究用途</span>
+                <span class="sample-value">{{ infos['研究用途'] }}</span>
             </div>
             <div class="info">
                 <span class="sample-key">预处理</span>
@@ -96,7 +96,7 @@
         </el-dialog>
 
         <!--运输按钮对话框-->
-        <el-dialog v-model="tran_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
+        <el-dialog v-model="tran_dialog" width="500" :close-on-click-modal="false" @close="clearData" style="font-size: 18px">
             <template #header>
                 运输信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
@@ -124,7 +124,7 @@
         </el-dialog>
 
         <!--接收按钮对话框-->
-        <el-dialog v-model="acc_dialog" width="500" :close-on-click-modal="false" :destroy-on-close="true" style="font-size: 18px">
+        <el-dialog v-model="acc_dialog" width="500" :close-on-click-modal="false" @close="clearData" style="font-size: 18px">
             <template #header>
                 接收信息<el-tag type="success" style="font-size: 13px; margin-left: 10px">{{ infos['样本源编号'] }}</el-tag>
             </template>
@@ -168,7 +168,7 @@ const col_dialog = ref(false); // 采集按钮对话框
 const tran_dialog = ref(false); // 运输按钮对话框
 const acc_dialog = ref(false); // 接收按钮对话框
 
-const col_date = ref(false);
+const col_date = ref('');
 // 运输信息
 const tran_name = ref('');
 const tran_staff = ref('');
@@ -200,8 +200,7 @@ const getData = () => {
 // 采集按钮
 const colSubmit = (item, date) => {
     let params = {
-        样本源编号: item['样本源编号'],
-        样本类型: item['样本类型'],
+        样本编号: item['样本编号'],
         采集时间: date,
     };
     const formData = new FormData();
@@ -221,8 +220,7 @@ const tranSubmit = (item, name, staff, phone, date) => {
         tips();
     } else {
         let params = {
-            样本源编号: item['样本源编号'],
-            样本类型: item['样本类型'],
+            样本编号: item['样本编号'],
             运输方: name,
             负责人: staff,
             负责人联系方式: phone,
@@ -246,8 +244,7 @@ const accSubmit = (item, staff, phone, date) => {
         tips();
     } else {
         let params = {
-            样本源编号: item['样本源编号'],
-            样本类型: item['样本类型'],
+            样本编号: item['样本编号'],
             接收人: staff,
             接收人联系方式: phone,
             接收时间: date,
@@ -333,6 +330,17 @@ const svg = `
           L 15 15
         />
       `;
+// 关闭对话框后清空
+const clearData = () => {
+    col_date.value = '';
+    tran_name.value = '';
+    tran_staff.value = '';
+    tran_phone.value = '';
+    tran_date.value = '';
+    acc_staff.value = '';
+    acc_phone.value = '';
+    acc_date.value = '';
+};
 </script>
 
 <style scoped>

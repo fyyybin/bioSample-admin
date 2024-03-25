@@ -82,6 +82,19 @@ const MenuList = [
                     isKeepAlive: true,
                 },
             },
+            {
+                path: '/container/sequence',
+                name: 'SampleSequence',
+                meta: {
+                    icon: 'Aim',
+                    title: '样本测序',
+                    isLink: '',
+                    isHide: false,
+                    isFull: false,
+                    isAffix: false,
+                    isKeepAlive: true,
+                },
+            },
         ],
     },
     {
@@ -145,6 +158,20 @@ const MenuList = [
         meta: {
             icon: 'InfoFilled',
             title: '关于项目',
+            isLink: '',
+            isHide: false,
+            isFull: false,
+            isAffix: false,
+            isKeepAlive: true,
+        },
+    },
+    {
+        path: '/test/',
+        name: 'test',
+        component: '/upload',
+        meta: {
+            icon: 'InfoFilled',
+            title: '测试',
             isLink: '',
             isHide: false,
             isFull: false,

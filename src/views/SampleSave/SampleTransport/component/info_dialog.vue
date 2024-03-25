@@ -31,7 +31,6 @@ const props = defineProps({
 });
 const querys = {
     样本源编号: props.params,
-    样本类型: props.content,
     采集医院: props.hospital,
 };
 const details = ref({});
