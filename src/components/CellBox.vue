@@ -10,7 +10,7 @@
             <div v-for="(item, index) in num2" :key="index" class="cell_item">
                 <p>{{ item }}</p>
             </div>
-            <div v-for="index of 81" :key="index" class="cell_item2" :style="mouseclick.indexOf(index) === -1 ? '' : 'background-color:#009688'" @click="boxDetail(index)">
+            <div v-for="index of 81" :key="index" class="cell_item2" :style="mouseClick.indexOf(index) === -1 ? '' : 'background-color:#009688'" @click="boxDetail(index)">
                 <el-popover placement="bottom" :width="200" trigger="hover" :show-arrow="false">
                     <template #reference>
                         <img :src="images[searchCellBox(props.msg, index).样本源类型]" width="50" />
@@ -37,13 +37,13 @@ import XQ from '@/assets/images/container/血清.png';
 import XJ from '@/assets/images/container/外部血浆.png';
 import ZuZhi from '@/assets/images/container/zuzhi.png';
 import NJY from '@/assets/images/container/naojiye.png';
-import FB from '@/assets/images/container/fenbian.png';
-import NY from '@/assets/images/container/niaoye.png';
+import FB from '@/assets/images/container/粪便.png';
+import NY from '@/assets/images/container/尿液.png';
 import { ref } from 'vue';
 const props = defineProps({
     msg: Array,
 });
-const mouseclick = ref([]);
+const mouseClick = ref([]);
 const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const num2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const images = {
@@ -88,12 +88,12 @@ const emit = defineEmits(['cellDetail']);
 
 //点击后将aList事件发送给父组件
 const boxDetail = (index) => {
-    if (mouseclick.value.indexOf(index) === -1) {
-        mouseclick.value.push(index);
+    if (mouseClick.value.indexOf(index) === -1) {
+        mouseClick.value.push(index);
     } else {
-        mouseclick.value.splice(mouseclick.value.indexOf(index), 1);
+        mouseClick.value.splice(mouseClick.value.indexOf(index), 1);
     }
-    emit('cellDetail', CellBox(props.msg, mouseclick.value));
+    emit('cellDetail', CellBox(props.msg, mouseClick.value));
 };
 
 // const boxDetail = (index) => {
