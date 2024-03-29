@@ -48,7 +48,7 @@ const MenuList = [
         name: 'SampleSave',
         meta: {
             icon: 'MessageBox',
-            title: '样本保存',
+            title: '样本处理',
             isLink: '',
             isHide: false,
             isFull: true,
@@ -150,34 +150,6 @@ const MenuList = [
                 },
             },
         ],
-    },
-    {
-        path: '/about/index',
-        name: 'about',
-        component: '/about/index',
-        meta: {
-            icon: 'InfoFilled',
-            title: '关于项目',
-            isLink: '',
-            isHide: false,
-            isFull: false,
-            isAffix: false,
-            isKeepAlive: true,
-        },
-    },
-    {
-        path: '/test/',
-        name: 'test',
-        component: '/upload',
-        meta: {
-            icon: 'InfoFilled',
-            title: '测试',
-            isLink: '',
-            isHide: false,
-            isFull: false,
-            isAffix: false,
-            isKeepAlive: true,
-        },
     },
 ];
 const autoMachine = [
