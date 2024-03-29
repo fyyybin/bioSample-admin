@@ -166,7 +166,7 @@ import { homeLeftCenTable, autoMachine } from '@/assets/mockdata';
 // import { Vue3SeamlessScroll } from 'vue3-seamless-scroll';
 import { useUserStore, useExamineStore } from '@/store';
 import { ExamineSearchAPI, ExamineAPI, ExamineDelAPI, hospitalDataAPI } from '@/http/api';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 const autoData = autoMachine;
 // const realData = realStatistics;

@@ -1,7 +1,7 @@
 const homeLeftCenTable = [
     {
         name: '浙江大学医学院附属第一医院',
-        src: '/src/assets/hospitals/zj1h.jpg',
+        src: './src/assets/hospitals/zj1h.jpg',
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
@@ -186,7 +186,7 @@ const autoMachine = [
         name: '浙江大学医学院附属第一医院',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: '/src/assets/images/zj1h.png',
+        src: './src/assets/images/zj1h.png',
         tem: '-80℃',
     },
     {
@@ -194,7 +194,7 @@ const autoMachine = [
         name: '浙江科技大学BitLab实验室',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: '/src/assets/images/bitlab.jpg',
+        src: './src/assets/images/bitlab.jpg',
         tem: '-80℃',
     },
     {
@@ -202,7 +202,7 @@ const autoMachine = [
         name: '浙江大学医学院附属儿童医院',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: '/src/assets/images/zjeb.jpg',
+        src: './src/assets/images/zjeb.jpg',
         tem: '-80℃',
     },
 ];
