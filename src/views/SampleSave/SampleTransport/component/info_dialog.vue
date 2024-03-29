@@ -30,7 +30,7 @@ const props = defineProps({
     hospital: String,
 });
 const querys = {
-    样本源编号: props.params,
+    样本编号: props.params,
     采集医院: props.hospital,
 };
 const details = ref({});
