@@ -1,28 +1,28 @@
 const homeLeftCenTable = [
     {
         name: '浙江大学医学院附属第一医院',
-        src: '@/assets/hospitals/zj1h.jpg',
+        src: new URL('@/assets/hospitals/zj1h.jpg', import.meta.url).href,
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '浙江大学医学院附属第四医院',
-        src: '@/assets/hospitals/zj4h.jpg',
+        src: new URL('@/assets/hospitals/zj4h.jpg', import.meta.url).href,
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '台州医院',
-        src: '@/assets/hospitals/tzh.jpg',
+        src: new URL('@/assets/hospitals/tzh.jpg', import.meta.url).href,
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '浙江大学医学院附属儿童医院',
-        src: '@/assets/hospitals/zjeb.jpg',
+        src: new URL('@/assets/hospitals/zjeb.jpg', import.meta.url).href,
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
@@ -179,64 +179,4 @@ const autoMachine = [
     },
 ];
 
-const realStatistics = [
-    {
-        name: '胆汁',
-        data: '9份',
-    },
-    {
-        name: '尿沉渣',
-        data: '100份',
-    },
-    {
-        name: '尿液',
-        data: '150份',
-    },
-    {
-        name: '粪便',
-        data: '201份',
-    },
-    {
-        name: '癌组织',
-        data: '188份',
-    },
-    {
-        name: '白细胞',
-        data: '99份',
-    },
-
-    {
-        name: '肝癌',
-        data: '188份',
-    },
-    {
-        name: '前列腺',
-        data: '99份',
-    },
-    {
-        name: '腹部',
-        data: '28份',
-    },
-    {
-        name: '淋巴癌',
-        data: '28份',
-    },
-    {
-        name: '宫颈癌',
-        data: '28份',
-    },
-    {
-        name: '直肠癌',
-        data: '28份',
-    },
-    {
-        name: '鼻咽癌',
-        data: '28份',
-    },
-    {
-        name: '血清',
-        data: '28份',
-    },
-];
-
-export { homeLeftCenTable, autoMachine, realStatistics, MenuList };
+export { homeLeftCenTable, autoMachine, MenuList };

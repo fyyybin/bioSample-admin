@@ -47,13 +47,13 @@ const mouseClick = ref([]);
 const num1 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 const num2 = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const images = {
-    全血: Blood,
-    血清: XQ,
-    血浆: XJ,
-    组织: ZuZhi,
-    脑脊液: NJY,
-    尿液: NY,
-    粪便: FB,
+    全血: new URL(Blood, import.meta.url).href,
+    血清: new URL(XQ, import.meta.url).href,
+    血浆: new URL(XJ, import.meta.url).href,
+    组织: new URL(ZuZhi, import.meta.url).href,
+    脑脊液: new URL(NJY, import.meta.url).href,
+    尿液: new URL(NY, import.meta.url).href,
+    粪便: new URL(FB, import.meta.url).href,
     暂无: '',
 };
 const CellBox = (data, indexs) => {
