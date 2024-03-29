@@ -181,7 +181,7 @@ const hospital = ref('');
 // 详细数据
 const showDetail = () => {
     const sample = infos.value;
-    (id.value = sample['样本源编号']), (content.value = sample['样本源类型']), (hospital.value = sample['采集医院']);
+    (id.value = sample['样本编号']), (content.value = sample['样本源类型']), (hospital.value = sample['采集医院']);
     info_dialog.value = true;
 };
 
