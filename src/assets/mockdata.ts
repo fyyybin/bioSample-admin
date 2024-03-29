@@ -1,28 +1,28 @@
 const homeLeftCenTable = [
     {
         name: '浙江大学医学院附属第一医院',
-        src: './src/assets/hospitals/zj1h.jpg',
+        src: '@/assets/hospitals/zj1h.jpg',
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '浙江大学医学院附属第四医院',
-        src: '/src/assets/hospitals/zj4h.jpg',
+        src: '@/assets/hospitals/zj4h.jpg',
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '台州医院',
-        src: '/src/assets/hospitals/tzh.jpg',
+        src: '@/assets/hospitals/tzh.jpg',
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
     },
     {
         name: '浙江大学医学院附属儿童医院',
-        src: '/src/assets/hospitals/zjeb.jpg',
+        src: '@/assets/hospitals/zjeb.jpg',
         drkNum: 0,
         yrkNum: 0,
         cxNum: 0,
@@ -158,7 +158,7 @@ const autoMachine = [
         name: '浙江大学医学院附属第一医院',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: './src/assets/images/zj1h.png',
+        src: new URL('@/assets/images/zj1h.png', import.meta.url).href,
         tem: '-80℃',
     },
     {
@@ -166,7 +166,7 @@ const autoMachine = [
         name: '浙江科技大学BitLab实验室',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: './src/assets/images/bitlab.jpg',
+        src: new URL('@/assets/images/bitlab.jpg', import.meta.url).href,
         tem: '-80℃',
     },
     {
@@ -174,7 +174,7 @@ const autoMachine = [
         name: '浙江大学医学院附属儿童医院',
         position: 'Liconic自动化冰箱',
         number: '1',
-        src: './src/assets/images/zjeb.jpg',
+        src: new URL('@/assets/images/zjeb.jpg', import.meta.url).href,
         tem: '-80℃',
     },
 ];
