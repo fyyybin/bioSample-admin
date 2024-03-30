@@ -72,14 +72,17 @@ const sampleType = [
         ],
     },
     {
+        value: '脑脊液',
         label: '脑脊液',
         icon: 'Folder',
     },
     {
+        value: '尿液',
         label: '尿液',
         icon: 'Folder',
     },
     {
+        value: '粪便',
         label: '粪便',
         icon: 'Folder',
     },

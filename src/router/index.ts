@@ -73,17 +73,7 @@ const routes = [
             title: '样本操作',
             layout: true,
         },
-    },
-
-    {
-        path: '/test/',
-        name: 'test',
-        component: () => import('../views/upload.vue'),
-        meta: {
-            title: '测试',
-            layout: true,
-        },
-    },
+    }
 ];
 
 const router = createRouter({
